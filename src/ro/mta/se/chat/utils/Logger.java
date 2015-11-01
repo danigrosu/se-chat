@@ -80,5 +80,13 @@ public class Logger {
         }
     }
 
+    public void log(int level, String message, Exception e)
+    {
+        if (level >= Constants.GLOBAL_LOGGING_LEVEL){
+            System.out.println("Log time: " + System.currentTimeMillis() +
+                    ", Message: " + message +
+                    ", Exception message: " + e.getMessage());
+        }
+    }
 
 }

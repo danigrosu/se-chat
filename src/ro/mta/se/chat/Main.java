@@ -1,5 +1,6 @@
 package ro.mta.se.chat;
 
+import ro.mta.se.chat.exceptions.ConnectionLostException;
 import ro.mta.se.chat.utils.*;
 
 /**
@@ -10,7 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
         Main mainTest = new Main("Hello World!");
-        mainTest.sayHello();
+        //mainTest.sayHello();
+        mainTest.exceptionTest();
     }
 
     String message;
@@ -29,5 +31,19 @@ public class Main {
                 Thread.currentThread().getStackTrace()[1].getMethodName());
 
         System.out.println("Dennis Ritchie said Hello, world.");
+    }
+
+    /**
+     * Testing
+     */
+    public void exceptionTest()
+    {
+        try {
+            throw new ConnectionLostException("Connection lost",1);
+        }
+        catch (ConnectionLostException e)
+        {
+            theLogger.log(Level.ERROR,"Connection problem",e);
+        }
     }
 }
