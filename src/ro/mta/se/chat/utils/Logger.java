@@ -1,91 +1,119 @@
 package ro.mta.se.chat.utils;
+import java.io.*;
 
 /**
+ * Main class
  * Created by Dani on 10/24/2015.
  */
 public class Logger {
 
-    private int level = Level.INFO;
-    private String name;
+    private Logger() {
 
-    public Logger(String name) {
-        this.name = name;
     }
+
 
     /**
-     * Function returns a new Logger
+     * Function log
      *
-     * @param message Logger message
-     * @return Logger
-     */
-    public static Logger getLogger(String message) {
-        return new Logger(message);
-    }
-
-    /**
-     * Function returns current level of Logger
-     *
-     * @return int
-     */
-    public int getLevel() {
-        return this.level;
-    }
-
-    /**
-     * Function returns the Logger's name
-     *
-     * @return String
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /** Function log
-     * @param level specified level
+     * @param level   specified level
      * @param message specified message
      */
-    public void log(int level, String message) {
+    public static synchronized void log(int level, String message) {
         if (level >= Constants.GLOBAL_LOGGING_LEVEL) {
-            System.out.println("Log time: " + System.currentTimeMillis() +
-                    ", Message: " + message + "\n" + Level.getLevelName(level));
+            String out = "Log time: " + System.currentTimeMillis() +
+                    ", Message: " + message + "\n" + Level.getLevelName(level) + "\n";
+            if(Constants.LOG_TO_FILE == false) {
+                System.out.println(out);
+            }
+            else {
+                try {
+                    FileWriter fw = new FileWriter(Constants.LOGGING_FILE,true);
+                    fw.write(out);
+                    fw.close();
+                }
+                catch (IOException e) {
+                    System.out.println("File does not exist.");
+                }
+            }
         }
     }
 
     /**
      * Function log
-     * @param level specified level
-     * @param message specified message
+     *
+     * @param level     specified level
+     * @param message   specified message
      * @param className specified class name
      */
-    public void log(int level, String message, String className) {
+    public static synchronized void log(int level, String message, String className) {
         if (level >= Constants.GLOBAL_LOGGING_LEVEL) {
-            System.out.println("Log time: " + System.currentTimeMillis() +
+            String out = "Log time: " + System.currentTimeMillis() +
                     ", Message: " + message + "ClassName: " + className +
-                    "\n" + Level.getLevelName(level));
+                    "\n" + Level.getLevelName(level) + "\n";
+
+            if(Constants.LOG_TO_FILE == false) {
+                System.out.println(out);
+            }
+            else {
+                try {
+                    FileWriter fw = new FileWriter(Constants.LOGGING_FILE,true);
+                    fw.write(out);
+                    fw.close();
+                }
+                catch (IOException e){
+                    System.out.println("File does not exist.");
+                }
+            }
         }
     }
 
     /**
-     *
-     * @param level specified level
-     * @param message specified message
-     * @param className specified class name
+     * @param level      specified level
+     * @param message    specified message
+     * @param className  specified class name
      * @param methodName specified method name
      */
-    public void log(int level, String message, String className, String methodName) {
+    public static synchronized void log(int level, String message, String className, String methodName) {
         if (level >= Constants.GLOBAL_LOGGING_LEVEL) {
-            System.out.println("Log time: " + System.currentTimeMillis() +
+            String out = "Log time: " + System.currentTimeMillis() +
                     ", Message: " + message + ", ClassName: " + className +
-                    ", MethodName: " + methodName + "\n" + Level.getLevelName(level));
+                    ", MethodName: " + methodName + "\n" + Level.getLevelName(level) + "\n";
+
+            if(Constants.LOG_TO_FILE == false) {
+                System.out.println(out);
+            }
+            else {
+                try {
+                    FileWriter fw = new FileWriter(Constants.LOGGING_FILE,true);
+                    fw.write(out);
+                    fw.close();
+                }
+                catch (IOException e){
+                    System.out.println("File does not exist.");
+                }
+            }
         }
     }
 
-    public void log(int level, String message, Exception e)
-    {
-        if (level >= Constants.GLOBAL_LOGGING_LEVEL){
-            System.out.println("Log time: " + System.currentTimeMillis() +
+    public static synchronized void log(int level, String message, Exception e) {
+        if (level >= Constants.GLOBAL_LOGGING_LEVEL) {
+            String out = "Log time: " + System.currentTimeMillis() +
                     ", Message: " + message +
-                    ", Exception message: " + e.getMessage());
+                    ", Exception message: " + e.getMessage() + "\n";
+
+            if(Constants.LOG_TO_FILE == false) {
+                System.out.println(out);
+            }
+            else {
+                try {
+                    FileWriter fw = new FileWriter(Constants.LOGGING_FILE,true);
+                    fw.write(out);
+                    fw.close();
+                }
+                catch (IOException ex){
+                    System.out.println("File does not exist.");
+                }
+            }
         }
     }
 

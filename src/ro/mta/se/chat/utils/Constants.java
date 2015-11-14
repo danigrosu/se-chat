@@ -8,4 +8,6 @@ public class Constants {
      * Global logging level, default for the application
      */
     public static final int GLOBAL_LOGGING_LEVEL = Level.INFO;
+    public static final String LOGGING_FILE = "log.txt";
+    public static final boolean LOG_TO_FILE = true;
 }
