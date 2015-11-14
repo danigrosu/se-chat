@@ -1,0 +1,20 @@
+Log time: 1447529665985, Message: Message 0
+WARNING
+Log time: 1447529665987, Message: Message 1
+WARNING
+Log time: 1447529665988, Message: Message 2
+WARNING
+Log time: 1447529665989, Message: Message 0
+INFO
+Log time: 1447529665990, Message: Message 3
+WARNING
+Log time: 1447529665991, Message: Message 4
+WARNING
+Log time: 1447529666090, Message: Message 1
+INFO
+Log time: 1447529666208, Message: Message 2
+INFO
+Log time: 1447529666313, Message: Message 3
+INFO
+Log time: 1447529666416, Message: Message 4
+INFO
