@@ -1,5 +1,8 @@
 package ro.mta.se.chat.view;
 
+import ro.mta.se.chat.adapters.DatabaseAdapter;
+import ro.mta.se.chat.communication.PeerToPeerConnection;
+import ro.mta.se.chat.controller.crypto.AESManager;
 import ro.mta.se.chat.model.CurrentConfiguration;
 
 import javax.swing.*;
@@ -39,7 +42,7 @@ public class CurrentUserOptions extends JPanel {
         JTextField textPort = new JTextField(10);
         textPort.setText(cc.getPort());
 
-        JButton editButton = new JButton("Edit");
+        JButton editButton = new JButton("Start chat");
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,7 +50,31 @@ public class CurrentUserOptions extends JPanel {
                 String ip = textIp.getText();
                 String port = textPort.getText();
 
+                CurrentConfiguration.setUsername(name);
+                CurrentConfiguration.setIp(ip);
+                CurrentConfiguration.setPort(port);
+
                 // TODO: Edit user data
+                DatabaseAdapter.editUser(cc.getUsername() ,name, ip, port);
+                PeerToPeerConnection p2p = new PeerToPeerConnection();
+
+                try {
+
+                    Thread t = new Thread(new Runnable() {
+                        public void run() {
+                            p2p.acceptConnection();
+                    }});
+                    t.start();
+
+                    JOptionPane.showMessageDialog(null, "Your IP: " + ip + "\nYour port: " + port, "Chat enabled", JOptionPane.INFORMATION_MESSAGE);
+                }
+                catch (Exception ex){
+                    JOptionPane.showMessageDialog(null, "Could not connect on port " + port, "Error on connect", JOptionPane.ERROR_MESSAGE);
+
+                }
+
+
+
             }
         });
 

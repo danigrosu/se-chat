@@ -71,6 +71,7 @@ public class FriendsList extends JPanel
             listModel.addElement(friends.get(i).getName());
         }
 
+
         //Create the list and put it in a scroll pane.
         list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -95,7 +96,7 @@ public class FriendsList extends JPanel
         friendName = new JTextField(20);
         friendName.addActionListener(addListener);
         friendName.getDocument().addDocumentListener(addListener);
-        JLabel lab1 = new JLabel("Name: ");
+        JLabel lab1 = new JLabel("Name:");
         String name = listModel.getElementAt(list.getSelectedIndex()).toString();
 
         friendPanel.add(lab1);
@@ -108,7 +109,7 @@ public class FriendsList extends JPanel
         ipText = new JTextField(15);
         //ipText.addActionListener(addListener);
         //ipText.getDocument().addDocumentListener(addListener);
-        JLabel lab2 = new JLabel("IP: ");
+        JLabel lab2 = new JLabel("IP:");
 
         ipPanel.add(lab2);
         ipPanel.add(ipText);
@@ -117,7 +118,7 @@ public class FriendsList extends JPanel
         portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.LINE_AXIS));
 
         portText = new JTextField(6);
-        JLabel lab3 = new JLabel("Port: ");
+        JLabel lab3 = new JLabel("Port:");
 
         portPanel.add(lab3);
         portPanel.add(portText);
@@ -224,6 +225,7 @@ public class FriendsList extends JPanel
             }
 
             listModel.insertElementAt(friendName.getText(), index);
+
             //If we just wanted to add to the end, we'd do this:
             //listModel.addElement(friendName.getText());
 
@@ -293,11 +295,11 @@ public class FriendsList extends JPanel
         }
     }
 
-    public JList getList()
+    public DefaultListModel getListModel()
     {
-        return list;
+        return listModel;
     }
-
+    public JList getList() { return list;}
 
 
 }

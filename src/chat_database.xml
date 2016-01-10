@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root count="13">
-    <friend id="1" ip="192.168.1.108" name="Dani" port="45000"/>
-    <friend id="2" ip="192.168.1.107" name="Bogdan" port="45000"/>
-    <friend id="3" ip="192.168.1.103" name="Radu" port="45000"/>
-    <friend id="4" ip="192.168.1.109" name="Cezar" port="45000"/>
+    <friend id="1" ip="127.0.0.1" name="Dani" port="9000"/>
+    <friend id="2" ip="127.0.0.1" name="Florin" port="9001"/>
+    <friend id="3" ip="127.0.0.1" name="Ionut" port="9002"/>
+    <friend id="4" ip="127.0.0.1" name="Cezar" port="45000"/>
     <friend id="5" ip="192.168.1.121" name="Viorel" port="45001"/>
     <friend id="6" ip="192.168.1.122" name="Soni" port="45001"/>
 
-    <friend id="7" ip="192.168.1.190" name="Lena" port="45001"/>
-    <friend id="8" ip="192.168.1.191" name="Ana" port="45001"/>
+    <friend id="7" ip="127.0.0.1" name="Lenuta" port="45001"/>
+    <friend id="8" ip="192.168.1.228" name="Ana" port="28000"/>
     <friend id="9" ip="192.168.1.191" name="Cristi" port="45001"/>
     <friend id="10" ip="10.10.10.2" name="Xena" port="23400"/>
     <friend id="11" ip="192.168.1.199" name="Tavi" port="9000"/>
 	<friend id="12" ip="10.10.10.4" name="Samsung" port="9000"/>
-<friend id="13" ip="192.168.1.190" name="Lena's sister" port="45000"/>
+<friend id="13" ip="127.0.0.1" name="Mimi" port="9009"/>
 </root>

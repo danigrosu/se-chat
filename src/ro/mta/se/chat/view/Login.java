@@ -48,6 +48,9 @@ public class Login extends JFrame {
             JTextField textName = new JTextField(10);
             JPasswordField textPass = new JPasswordField(10);
 
+            textName.setText("Dani");
+            textPass.setText("asics");
+
             JButton loginButton = new JButton("Login");
             loginButton.addActionListener(new ActionListener() {
                 @Override
@@ -67,6 +70,8 @@ public class Login extends JFrame {
                         frame.setVisible(true);
                         frame.setResizable(false);
                         dispose();
+
+
                     }
                     else{
                         JOptionPane.showMessageDialog(null,"Authentication failed!");

@@ -39,4 +39,16 @@ public class CurrentConfiguration {
     public byte[] getSessionKey(){
         return sessionKey;
     }
+    public static void setUsername(String username){
+        if (theConfiguration != null)
+        theConfiguration.username = username;
+    }
+    public static void setIp(String ip){
+        if (theConfiguration != null)
+        theConfiguration.ip = ip;
+    }
+    public static void setPort(String port){
+        if (theConfiguration != null)
+        theConfiguration.port = port;
+    }
 }

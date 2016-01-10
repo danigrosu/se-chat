@@ -1,5 +1,7 @@
 package ro.mta.se.chat.controller;
 
+import ro.mta.se.chat.adapters.DatabaseAdapter;
+import ro.mta.se.chat.model.CurrentConfiguration;
 import ro.mta.se.chat.model.User;
 import ro.mta.se.chat.model.XmlDbParser;
 import ro.mta.se.chat.view.CurrentUserOptions;
@@ -56,7 +58,7 @@ public class MainFrame extends JFrame {
 
                 userOptions.removeAll();
 
-                User clickedUser = new XmlDbParser().getUserData(userClicked);
+                User clickedUser = DatabaseAdapter.getUserData(userClicked);
 
                 //userOptionPanel.setVisible(false);
                 // name
@@ -81,11 +83,25 @@ public class MainFrame extends JFrame {
                 editButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String name = textName.getText();
+                        String username = textName.getText();
                         String ip = textIp.getText();
                         String port = textPort.getText();
 
                         // TODO: Edit user data
+                        DatabaseAdapter.editUser(userClicked, username, ip, port);
+
+                        for (int i = 0; i < friendsList.getListModel().size(); i++) {
+
+                            String oldUsername = friendsList.getListModel().get(i).toString();
+
+                            if (oldUsername.equals(userClicked)) {
+                                friendsList.getListModel().remove(i);
+                                friendsList.getListModel().add(i,username);
+                                friendsList.revalidate();
+                                break;
+                            }
+                        }
+
                     }
                 });
 
@@ -147,8 +163,14 @@ public class MainFrame extends JFrame {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             TabComponents chatBox = TabComponents.getTabComponents("Chat room");
-                            chatBox.addPartner(list.getSelectedValue().toString(), "", "");
+                            String partner = list.getSelectedValue().toString();
+                            chatBox.addPartner(partner,
+                                    DatabaseAdapter.getUserIp(partner),
+                                    DatabaseAdapter.getUserPort(partner));
                             chatBox.setVisible(true);
+
+                            System.out.println("Connect to " + DatabaseAdapter.getUserIp(partner) + ":" +
+                                    DatabaseAdapter.getUserPort(partner));
                         }
                     });
                 }

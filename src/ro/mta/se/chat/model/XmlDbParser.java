@@ -139,4 +139,36 @@ public class XmlDbParser {
         }
 
     }
+
+    public void editUser(String username, String newUsername, String ip, String port){
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.parse(DATABASE_PATH);
+            Element root = document.getDocumentElement();
+
+            NodeList list = root.getElementsByTagName("friend");
+
+            for (int i = 0; i < list.getLength(); i++){
+                Node node = list.item(i);
+                if (username.equals(node.getAttributes().getNamedItem("name").getTextContent())){
+                    node.getAttributes().getNamedItem("name").setTextContent(newUsername);
+                    node.getAttributes().getNamedItem("ip").setTextContent(ip);
+                    node.getAttributes().getNamedItem("port").setTextContent(port);
+                }
+
+            }
+
+            DOMSource source = new DOMSource(document);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            StreamResult result = new StreamResult(DATABASE_PATH);
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(source, result);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

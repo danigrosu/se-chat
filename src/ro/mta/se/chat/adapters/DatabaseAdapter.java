@@ -31,4 +31,14 @@ public class DatabaseAdapter {
         User user = xml.getUserData(username);
         return user.getId();
     }
+
+    public static void editUser(String username, String newUsername, String ip, String port){
+        XmlDbParser xml = new XmlDbParser();
+        xml.editUser(username, newUsername, ip, port);
+    }
+
+    public static  User getUserData(String username){
+        XmlDbParser xml = new XmlDbParser();
+        return xml.getUserData(username);
+    }
 }

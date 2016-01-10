@@ -44,6 +44,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.net.Socket;
+import java.util.*;
 
 import ro.mta.se.chat.controller.*;
 
@@ -55,6 +57,7 @@ public class TabComponents extends JFrame {
 
     private static TabComponents tabComponents;
 
+    private java.util.LinkedList<ChatRoomPanel> tabList = new LinkedList<>();
     private final JTabbedPane pane = new JTabbedPane();
     private JMenuItem tabComponentsItem;
     private JMenuItem scrollLayoutItem;
@@ -82,7 +85,7 @@ public class TabComponents extends JFrame {
 
     }
 
-    private int exists(String title)
+    public int exists(String title)
     {
         for( int i = 0; i < pane.getTabCount(); i++)
         {
@@ -90,6 +93,21 @@ public class TabComponents extends JFrame {
                 return 1;
         }
         return 0;
+    }
+
+    public int isOpen(String ip, int port) {
+        for (int i = 0; i < tabList.size(); i++) {
+            ChatRoomPanel chatRoomPanel = tabList.get(i);
+            if (chatRoomPanel.getIp().equals(ip) && chatRoomPanel.getPort() == port) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    public  LinkedList<ChatRoomPanel> getTabList(){
+        return tabComponents.tabList;
     }
 
     public static TabComponents getTabComponents(String title)
@@ -121,7 +139,9 @@ public class TabComponents extends JFrame {
     public void addPartner(String partner, String ip, String port) {
         if(exists(partner) == 1)
             return;
-        pane.add(partner, new ChatRoomPanel(partner, ip, port));
+        ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port);
+        tabComponents.tabList.add(chatRoomPanel);
+        pane.add(partner, chatRoomPanel);
         initTabComponent(pane.getTabCount() - 1);
     }
     
