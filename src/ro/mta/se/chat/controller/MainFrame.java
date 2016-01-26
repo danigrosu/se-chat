@@ -1,9 +1,12 @@
 package ro.mta.se.chat.controller;
 
 import ro.mta.se.chat.adapters.DatabaseAdapter;
+import ro.mta.se.chat.communication.PeerToPeerConnection;
+import ro.mta.se.chat.controller.crypto.AESManager;
 import ro.mta.se.chat.model.CurrentConfiguration;
 import ro.mta.se.chat.model.User;
 import ro.mta.se.chat.model.XmlDbParser;
+import ro.mta.se.chat.observers.MessageObserver;
 import ro.mta.se.chat.view.CurrentUserOptions;
 import ro.mta.se.chat.view.FriendsList;
 import ro.mta.se.chat.view.TabComponents;
@@ -15,15 +18,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.Socket;
 
 /**
- *
  * Created by Dani on 11/22/2015.
  */
 
 //package controller;
-        //package view;
-        //package model;
+//package view;
+//package model;
 
 public class MainFrame extends JFrame {
 
@@ -31,13 +34,13 @@ public class MainFrame extends JFrame {
     private UserEditOptions userOptions = new UserEditOptions();
     private CurrentUserOptions currentUserOptions = new CurrentUserOptions();
 
-    public MainFrame()
-    {
+    private static MessageObserver messageObserver = null;
+
+    public MainFrame() {
 
     }
 
-    public MainFrame(String title)
-    {
+    public MainFrame(String title) {
         super(title);
 
         // Set layout manager
@@ -96,7 +99,7 @@ public class MainFrame extends JFrame {
 
                             if (oldUsername.equals(userClicked)) {
                                 friendsList.getListModel().remove(i);
-                                friendsList.getListModel().add(i,username);
+                                friendsList.getListModel().add(i, username);
                                 friendsList.revalidate();
                                 break;
                             }
@@ -156,23 +159,27 @@ public class MainFrame extends JFrame {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 1) {
 
-                    friendsList.fireUserClickedEvent(new UserClickedEvent(this,list.getSelectedValue().toString()));
+                    friendsList.fireUserClickedEvent(new UserClickedEvent(this, list.getSelectedValue().toString()));
 
-                } else if (evt.getClickCount() == 2) {
-                    // Double-click detected
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            TabComponents chatBox = TabComponents.getTabComponents("Chat room");
-                            String partner = list.getSelectedValue().toString();
-                            chatBox.addPartner(partner,
-                                    DatabaseAdapter.getUserIp(partner),
-                                    DatabaseAdapter.getUserPort(partner));
-                            chatBox.setVisible(true);
+                } else {
+                    if (evt.getClickCount() == 2) {
+                        // Double-click detected
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                TabComponents chatBox = TabComponents.getTabComponents("Chat room");
+                                String partner = list.getSelectedValue().toString();
 
-                            System.out.println("Connect to " + DatabaseAdapter.getUserIp(partner) + ":" +
-                                    DatabaseAdapter.getUserPort(partner));
-                        }
-                    });
+                                PeerToPeerConnection.connectToPeer(partner, DatabaseAdapter.getUserIp(partner),
+                                        Integer.parseInt(DatabaseAdapter.getUserPort(partner)));
+
+
+                                chatBox.setVisible(true);
+
+                                System.out.println("Connect to " + DatabaseAdapter.getUserIp(partner) + ":" +
+                                        DatabaseAdapter.getUserPort(partner));
+                            }
+                        });
+                    }
                 }
 
             }
@@ -182,18 +189,16 @@ public class MainFrame extends JFrame {
 
         Container c = getContentPane();
 
-        c.add(friendsList,BorderLayout.WEST);
-        c.add(userOptions,BorderLayout.SOUTH);
+        c.add(friendsList, BorderLayout.WEST);
+        c.add(userOptions, BorderLayout.SOUTH);
         c.add(currentUserOptions, BorderLayout.EAST);
     }
 
-    public JPanel getUserOptions()
-    {
+    public JPanel getUserOptions() {
         return userOptions;
     }
 
-    public FriendsList getFriendsList()
-    {
+    public FriendsList getFriendsList() {
         return friendsList;
     }
 

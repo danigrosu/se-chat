@@ -143,25 +143,24 @@ public class FriendsList extends JPanel
         add(buttonPane, BorderLayout.PAGE_END);
 
 
-
     }
 
 
-    public void fireUserClickedEvent(UserClickedEvent event){
+    public void fireUserClickedEvent(UserClickedEvent event) {
         Object[] listeners = listenerList.getListenerList();
 
-        for(int i=0;i<listeners.length;i++){
-            if(listeners[i] == UserClickedListener.class){
-                ((UserClickedListener)listeners[i+1]).userClickedEventOccurred(event);
+        for (int i = 0; i < listeners.length; i++) {
+            if (listeners[i] == UserClickedListener.class) {
+                ((UserClickedListener) listeners[i + 1]).userClickedEventOccurred(event);
             }
         }
     }
 
-    public void addUserClickedListener( UserClickedListener listener){
+    public void addUserClickedListener(UserClickedListener listener) {
         listenerList.add(UserClickedListener.class, listener);
     }
 
-    public void removeUserClickedListener( UserClickedListener listener){
+    public void removeUserClickedListener(UserClickedListener listener) {
         listenerList.remove(UserClickedListener.class, listener);
     }
 
@@ -211,7 +210,6 @@ public class FriendsList extends JPanel
                 Toolkit.getDefaultToolkit().beep();
                 friendName.requestFocusInWindow();
                 friendName.selectAll();
-
 
 
                 return;
@@ -295,11 +293,13 @@ public class FriendsList extends JPanel
         }
     }
 
-    public DefaultListModel getListModel()
-    {
+    public DefaultListModel getListModel() {
         return listModel;
     }
-    public JList getList() { return list;}
+
+    public JList getList() {
+        return list;
+    }
 
 
 }

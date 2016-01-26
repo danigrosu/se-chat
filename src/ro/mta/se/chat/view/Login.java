@@ -61,8 +61,7 @@ public class Login extends JFrame {
                     if(RSAKeysManager.login(textName.getText(), String.valueOf(textPass.getPassword()))) {
 
                         CurrentConfiguration.getTheConfiguration(textName.getText(), DatabaseAdapter.getUserIp(
-                                        textName.getText()), DatabaseAdapter.getUserPort(textName.getText()),
-                                        AESManager.generateKey(128));
+                                        textName.getText()), DatabaseAdapter.getUserPort(textName.getText()));
 
                         JFrame frame = new MainFrame("LiveChat");
                         frame.setSize(400, 500);
@@ -134,6 +133,10 @@ public class Login extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     String newUsername = textName2.getText();
                     String newPassword = String.valueOf(textPass2.getPassword());
+
+                    if(newUsername.contains("-")) {
+                        return;
+                    }
 
                     RSAKeysManager.createLoginToken(newUsername, newPassword);
                 }

@@ -56,13 +56,11 @@ public class CurrentUserOptions extends JPanel {
 
                 // TODO: Edit user data
                 DatabaseAdapter.editUser(cc.getUsername() ,name, ip, port);
-                PeerToPeerConnection p2p = new PeerToPeerConnection();
-
                 try {
 
                     Thread t = new Thread(new Runnable() {
                         public void run() {
-                            p2p.acceptConnection();
+                            PeerToPeerConnection.acceptConnection(Integer.parseInt(port));
                     }});
                     t.start();
 

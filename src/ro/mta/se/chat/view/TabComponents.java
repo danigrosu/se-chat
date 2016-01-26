@@ -136,10 +136,10 @@ public class TabComponents extends JFrame {
     }
 
     
-    public void addPartner(String partner, String ip, String port) {
+    public void addPartner(String partner, String ip, String port, Socket socket, String aesKey) {
         if(exists(partner) == 1)
             return;
-        ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port);
+        ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port, socket, aesKey);
         tabComponents.tabList.add(chatRoomPanel);
         pane.add(partner, chatRoomPanel);
         initTabComponent(pane.getTabCount() - 1);

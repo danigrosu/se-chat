@@ -1,88 +1,127 @@
 package ro.mta.se.chat.communication;
 
 /**
- *
  * Created by Dani on 1/5/2016.
  */
 
-import ro.mta.se.chat.view.ChatRoomPanel;
-import ro.mta.se.chat.view.TabComponents;
+import ro.mta.se.chat.controller.crypto.AESManager;
+import ro.mta.se.chat.controller.crypto.DiffieHellmanFactory;
+import ro.mta.se.chat.observers.MessageObserver;
 
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
 import java.net.Socket;
-import java.util.LinkedList;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
 
  */
-public class WorkerRunnable implements Runnable{
+public class WorkerRunnable implements Runnable {
 
     protected Socket clientSocket = null;
+    protected MessageObserver messageObserver = null;
+    protected DiffieHellmanFactory df = null;
+    protected String ip = null;
+    protected int port = 0;
+    protected String username;
+    String aesKey = null;
+    int semaphore;
 
-    protected  String ip = null;
-    protected  int port = 0;
-
-    public WorkerRunnable(Socket clientSocket) {
+    public WorkerRunnable(Socket clientSocket, String username, int semaphore, DiffieHellmanFactory df) {
+        messageObserver = MessageObserver.getMessageObserver();
+        this.semaphore = semaphore;
         this.clientSocket = clientSocket;
+
+        if (semaphore == 1) {
+            port = clientSocket.getPort();
+            String token = clientSocket.getRemoteSocketAddress().toString().replace("/", "");
+            int index = token.indexOf(":");
+            ip = token.substring(0, index);
+            this.df = df;
+            this.username = username;
+            //aesKey = PeerToPeerConnection.currentPartners.get(ip + ":" + port).aesKey;
+        }
     }
 
     public void run() {
         try {
 
-            while (!clientSocket.isClosed())
-            {
+            while (!clientSocket.isClosed()) {
                 InputStream input = clientSocket.getInputStream();
+                OutputStream output = clientSocket.getOutputStream();
 
-                String result = PeerToPeerConnection.getStringFromInputStream(input);
-                if (result.indexOf("#PORT#") == 0) {
+                if (semaphore == 0) {
+                    String result = PeerToPeerConnection.getStringFromInputStream(input);
 
-                    System.out.println(result);
-
-                    ip = clientSocket.getRemoteSocketAddress().toString().replace("/","");
+                    ip = clientSocket.getRemoteSocketAddress().toString().replace("/", "");
                     int index = ip.indexOf(":");
-                    ip = ip.substring(0,index);
-                    String token = result.substring(6);
-                    index = token.indexOf("-");
-                    port = Integer.parseInt(token.substring(0, index));
-                    String username = token.substring(index + 1);
+                    ip = ip.substring(0, index);
 
-                    PeerToPeerConnection.currentPartners.put(ip + ":" + port, clientSocket);
+                    String[] tokens = result.split("-");
+                    port = Integer.parseInt(tokens[1]);
+                    this.username = tokens[2];
 
-                    if ( TabComponents.getTabComponents("").isOpen(ip, port) == 0)
-                        TabComponents.getTabComponents("").addPartner(username, ip, Integer.toString(port));
-                }
-                else
-                {
-                    LinkedList<ChatRoomPanel> list =  TabComponents.getTabComponents("").getTabList();
+                    String p = tokens[3];
+                    String a = tokens[4]; // peer public
 
-                    int i = 0;
-                    for (; i < list.size(); i++) {
-                        ChatRoomPanel chatRoomPanel = list.get(i);
-                        if (chatRoomPanel.getPort() == port && chatRoomPanel.getIp().equals(ip)){
-                            chatRoomPanel.appendTextAreaPrint(chatRoomPanel.getPartner() + ": " + result);
-                            break;
-                        }
+                    df = new DiffieHellmanFactory();
+                    String myPublic = df.computePublic(p);
+
+                    output.write(("#PUB#-" + myPublic).getBytes());
+
+
+                    String theKey = df.computeTheKey(a);
+
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    String hex = (new HexBinaryAdapter()).marshal(md.digest((theKey).getBytes()));
+
+                    aesKey = hex.substring(10, 26);
+
+                    System.out.println("Session key: " + aesKey);
+
+                    PeerToPeerConnection.currentPartners.put(ip + ":" + port, new PeerInfo(clientSocket, aesKey));
+
+                    // TODO: add listener
+                    messageObserver.addListener(username, ip, Integer.toString(port), clientSocket, this.aesKey);
+
+                    semaphore++;
+                } else if (semaphore == 1) {
+
+                    String received = PeerToPeerConnection.getStringFromInputStream(input);
+
+                    if (received.indexOf("#PUB#") == 0) {
+                        String[] tokens = received.split("-");
+
+                        String theKey = this.df.computeTheKey(tokens[1]);
+
+                        MessageDigest md = MessageDigest.getInstance("MD5");
+                        String hex = (new HexBinaryAdapter()).marshal(md.digest((theKey).getBytes()));
+
+                        aesKey = hex.substring(10, 26);
+
+                        System.out.println("Session key: " + aesKey);
+
+                        PeerToPeerConnection.currentPartners.put(ip + ":" + port, new PeerInfo(clientSocket, aesKey));
+                        messageObserver.addListener(username, ip, Integer.toString(port), clientSocket, this.aesKey);
+                    } else {
+
+                        // TODO: notify view
+                        messageObserver.notifyView(ip, Integer.toString(port),
+                                AESManager.decrypt(aesKey, "1111111100000000", received));
                     }
-
                 }
-
-                //System.out.println(result);
 
             }
-        }
-
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("Partner: " + clientSocket.getRemoteSocketAddress().toString() + " left the chat.");
-        }
-        finally
-        {
-            try
-            {
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } finally {
+            try {
                 if (clientSocket != null)
                     clientSocket.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
 
                 e.getMessage();
             }

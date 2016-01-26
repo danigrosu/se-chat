@@ -1,54 +1,53 @@
 package ro.mta.se.chat.model;
 
 /**
- *
  * Created by Dani on 12/21/2015.
  */
 public class CurrentConfiguration {
     private String username;
     private String ip;
     private String port;
-    private byte[] sessionKey;
     private static CurrentConfiguration theConfiguration = null;
 
-    private CurrentConfiguration(String username, String ip, String port, byte[] sessionKey){
+    private CurrentConfiguration(String username, String ip, String port) {
         this.username = username;
         this.ip = ip;
         this.port = port;
-        this.sessionKey = sessionKey;
     }
 
-    public static CurrentConfiguration getTheConfiguration(){
+    public static CurrentConfiguration getTheConfiguration() {
         return theConfiguration;
     }
 
-    public static CurrentConfiguration getTheConfiguration(String username, String ip, String port, byte[] sessionKey){
-        theConfiguration = new CurrentConfiguration(username, ip, port, sessionKey);
+    public static CurrentConfiguration getTheConfiguration(String username, String ip, String port) {
+        theConfiguration = new CurrentConfiguration(username, ip, port);
         return theConfiguration;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
-    public String getIp(){
+
+    public String getIp() {
         return ip;
     }
-    public String getPort(){
+
+    public String getPort() {
         return port;
     }
-    public byte[] getSessionKey(){
-        return sessionKey;
-    }
-    public static void setUsername(String username){
+
+    public static void setUsername(String username) {
         if (theConfiguration != null)
-        theConfiguration.username = username;
+            theConfiguration.username = username;
     }
-    public static void setIp(String ip){
+
+    public static void setIp(String ip) {
         if (theConfiguration != null)
-        theConfiguration.ip = ip;
+            theConfiguration.ip = ip;
     }
-    public static void setPort(String port){
+
+    public static void setPort(String port) {
         if (theConfiguration != null)
-        theConfiguration.port = port;
+            theConfiguration.port = port;
     }
 }

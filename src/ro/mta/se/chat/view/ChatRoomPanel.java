@@ -21,21 +21,23 @@ public class ChatRoomPanel extends JPanel {
     String partner;
     String ip;
     String port;
-
-    Socket peerSocket = null;
+    //String aesKey = null;
+    //Socket socket = null;
 
     JTextArea textAreaPrint;
     JButton buttonSend;
     JTextArea textArea;
 
-    PeerToPeerConnection p2p = null;
+    PeerToPeerConnection p2p = new PeerToPeerConnection();
 
-    public ChatRoomPanel(String partner, String ip, String port)
+    public ChatRoomPanel(String partner, String ip, String port, Socket socket, String aesKey)
     {
         try {
             this.partner = partner;
             this.ip = ip;
             this.port = port;
+            //this.aesKey = aesKey;
+            //this.socket = socket;
 
             this.setLayout(new BorderLayout());
 
@@ -71,7 +73,7 @@ public class ChatRoomPanel extends JPanel {
                     } else {
 
                         // TODO: send message
-                        p2p.sendText(textArea.getText(),peerSocket);
+                        p2p.sendText(textArea.getText(), ip, port);
 
                         textAreaPrint.append("Me: " + textArea.getText() + "\n");
                         textArea.setText("");
@@ -83,8 +85,8 @@ public class ChatRoomPanel extends JPanel {
             this.add(up, BorderLayout.NORTH);
 
 
-            p2p = new PeerToPeerConnection();
-            peerSocket = p2p.connectToPeer(ip, Integer.parseInt(port));
+            //p2p = new PeerToPeerConnection();
+            //peerSocket = p2p.connectToPeer(ip, Integer.parseInt(port));
 
             // TODO: listen for new messages
 
@@ -94,16 +96,6 @@ public class ChatRoomPanel extends JPanel {
             e.printStackTrace();
         }
 
-    }
-
-    public void connectToPartner() {
-        p2p = new PeerToPeerConnection();
-        peerSocket = p2p.connectToPeer(ip, Integer.parseInt(port));
-        System.out.println("peerSocket:" + peerSocket.getPort());
-    }
-
-    public void setSocket(Socket s) {
-        this.peerSocket = s;
     }
 
     public String getPartner() {
