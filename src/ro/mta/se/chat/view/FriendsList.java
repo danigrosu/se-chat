@@ -145,7 +145,9 @@ public class FriendsList extends JPanel
 
     }
 
-
+    /**
+     * @param event
+     */
     public void fireUserClickedEvent(UserClickedEvent event) {
         Object[] listeners = listenerList.getListenerList();
 
@@ -156,10 +158,18 @@ public class FriendsList extends JPanel
         }
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void addUserClickedListener(UserClickedListener listener) {
         listenerList.add(UserClickedListener.class, listener);
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void removeUserClickedListener(UserClickedListener listener) {
         listenerList.remove(UserClickedListener.class, listener);
     }

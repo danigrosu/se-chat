@@ -166,14 +166,20 @@ public class MainFrame extends JFrame {
                         // Double-click detected
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                TabComponents chatBox = TabComponents.getTabComponents("Chat room");
+                                //TabComponents chatBox = TabComponents.getTabComponents("Chat room");
                                 String partner = list.getSelectedValue().toString();
 
-                                PeerToPeerConnection.connectToPeer(partner, DatabaseAdapter.getUserIp(partner),
-                                        Integer.parseInt(DatabaseAdapter.getUserPort(partner)));
+                                try {
+                                    PeerToPeerConnection.connectToPeer(partner, DatabaseAdapter.getUserIp(partner),
+                                            Integer.parseInt(DatabaseAdapter.getUserPort(partner)));
+                                }
+                                catch (Exception e)
+                                {
+                                    JOptionPane.showMessageDialog(null,"Could not connect to peer " + partner +
+                                    "\nError: " + e.getMessage());
+                                }
 
-
-                                chatBox.setVisible(true);
+                                //chatBox.setVisible(true);
 
                                 System.out.println("Connect to " + DatabaseAdapter.getUserIp(partner) + ":" +
                                         DatabaseAdapter.getUserPort(partner));
@@ -194,10 +200,18 @@ public class MainFrame extends JFrame {
         c.add(currentUserOptions, BorderLayout.EAST);
     }
 
+    /**
+     *
+     * @return jpanel for user options
+     */
     public JPanel getUserOptions() {
         return userOptions;
     }
 
+    /**
+     *
+     * @return the friendlist
+     */
     public FriendsList getFriendsList() {
         return friendsList;
     }

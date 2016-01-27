@@ -32,7 +32,7 @@ public class Login extends JFrame {
             setVisible(true);
             setResizable(false);
 
-            BufferedImage myPicture = ImageIO.read(new File("src/livechat.jpg"));
+            BufferedImage myPicture = ImageIO.read(new File("docs/livechat.jpg"));
             JLabel picLabel = new JLabel(new ImageIcon(myPicture));
             picLabel.setSize(75,25);
             add(picLabel, BorderLayout.NORTH);
@@ -56,8 +56,6 @@ public class Login extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
-
-
                     if(RSAKeysManager.login(textName.getText(), String.valueOf(textPass.getPassword()))) {
 
                         CurrentConfiguration.getTheConfiguration(textName.getText(), DatabaseAdapter.getUserIp(
@@ -68,6 +66,7 @@ public class Login extends JFrame {
                         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         frame.setVisible(true);
                         frame.setResizable(false);
+                        frame.setLocation(100,100);
                         dispose();
 
 

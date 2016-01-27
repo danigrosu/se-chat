@@ -6,10 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
@@ -21,8 +17,6 @@ public class ChatRoomPanel extends JPanel {
     String partner;
     String ip;
     String port;
-    //String aesKey = null;
-    //Socket socket = null;
 
     JTextArea textAreaPrint;
     JButton buttonSend;
@@ -30,14 +24,18 @@ public class ChatRoomPanel extends JPanel {
 
     PeerToPeerConnection p2p = new PeerToPeerConnection();
 
-    public ChatRoomPanel(String partner, String ip, String port, Socket socket, String aesKey)
+    /**
+     *
+     * @param partner
+     * @param ip
+     * @param port
+     */
+    public ChatRoomPanel(String partner, String ip, String port)
     {
         try {
             this.partner = partner;
             this.ip = ip;
             this.port = port;
-            //this.aesKey = aesKey;
-            //this.socket = socket;
 
             this.setLayout(new BorderLayout());
 
@@ -98,19 +96,35 @@ public class ChatRoomPanel extends JPanel {
 
     }
 
+    /**
+     *
+     * @return the partner in this room panel
+     */
     public String getPartner() {
         return this.partner;
     }
 
+    /**
+     *
+     * @return ip of partner
+     */
     public String getIp() {
         return this.ip;
     }
 
+    /**
+     *
+     * @return port of partner
+     */
     public int getPort() {
         return Integer.parseInt(this.port);
 
     }
 
+    /**
+     *
+     * @param text
+     */
     public void appendTextAreaPrint(String text) {
         textAreaPrint.append(text + "\n");
     }

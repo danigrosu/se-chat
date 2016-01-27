@@ -28,6 +28,13 @@ public class WorkerRunnable implements Runnable {
     String aesKey = null;
     int semaphore;
 
+    /**
+     * Constructor
+     * @param clientSocket
+     * @param username
+     * @param semaphore
+     * @param df
+     */
     public WorkerRunnable(Socket clientSocket, String username, int semaphore, DiffieHellmanFactory df) {
         messageObserver = MessageObserver.getMessageObserver();
         this.semaphore = semaphore;
@@ -44,6 +51,9 @@ public class WorkerRunnable implements Runnable {
         }
     }
 
+    /**
+     * Listen for new messages
+     */
     public void run() {
         try {
 
@@ -83,7 +93,7 @@ public class WorkerRunnable implements Runnable {
                     PeerToPeerConnection.currentPartners.put(ip + ":" + port, new PeerInfo(clientSocket, aesKey));
 
                     // TODO: add listener
-                    messageObserver.addListener(username, ip, Integer.toString(port), clientSocket, this.aesKey);
+                    messageObserver.addListener(username, ip, Integer.toString(port));
 
                     semaphore++;
                 } else if (semaphore == 1) {
@@ -103,7 +113,7 @@ public class WorkerRunnable implements Runnable {
                         System.out.println("Session key: " + aesKey);
 
                         PeerToPeerConnection.currentPartners.put(ip + ":" + port, new PeerInfo(clientSocket, aesKey));
-                        messageObserver.addListener(username, ip, Integer.toString(port), clientSocket, this.aesKey);
+                        messageObserver.addListener(username, ip, Integer.toString(port));
                     } else {
 
                         // TODO: notify view

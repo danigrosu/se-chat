@@ -32,6 +32,7 @@
 package ro.mta.se.chat.controller;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -43,7 +44,14 @@ import java.awt.event.*;
  */ 
 public class ButtonTabComponent extends JPanel {
     private final JTabbedPane pane;
-
+    JButton button;
+    public JButton getButton() {
+        return button;
+    }
+    /**
+     *
+     * @param pane
+     */
     public ButtonTabComponent(final JTabbedPane pane) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -68,12 +76,15 @@ public class ButtonTabComponent extends JPanel {
         //add more space between the label and the button
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         //tab button
-        JButton button = new TabButton();
+        button = new TabButton();
         add(button);
         //add more space to the top of the component
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
     }
 
+    /**
+     * Inner class for a tab button
+     */
     private class TabButton extends JButton implements ActionListener {
         public TabButton() {
             int size = 17;
@@ -93,12 +104,19 @@ public class ButtonTabComponent extends JPanel {
             setRolloverEnabled(true);
             //Close the proper tab by clicking the button
             addActionListener(this);
+
+
         }
 
+        /**
+         *
+         * @param e the event
+         */
         public void actionPerformed(ActionEvent e) {
             int i = pane.indexOfTabComponent(ButtonTabComponent.this);
             if (i != -1) {
-                pane.remove(i);
+                //pane.remove(i);
+                pane.setVisible(false);
             }
         }
 

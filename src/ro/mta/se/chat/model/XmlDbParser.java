@@ -22,8 +22,12 @@ import javax.xml.transform.stream.StreamResult;
 
 public class XmlDbParser {
 
-    public static  final String DATABASE_PATH = "src/chat_database.xml";
+    public static  final String DATABASE_PATH = "docs/chat_database.xml";
 
+    /**
+     * Function that gets all friends from database
+     * @return
+     */
     public ArrayList<User> getAllFriends() {
 
         ArrayList<User> users = new ArrayList<>();
@@ -63,6 +67,11 @@ public class XmlDbParser {
         return users;
     }
 
+    /**
+     * Get user information
+     * @param userName Username
+     * @return User object
+     */
     public User getUserData(String userName)
     {
         User user = null;
@@ -102,6 +111,10 @@ public class XmlDbParser {
         return user;
     }
 
+    /**
+     * Adds a new user to database
+     * @param user
+     */
     public void addUser(User user)
     {
         try {
@@ -140,6 +153,13 @@ public class XmlDbParser {
 
     }
 
+    /**
+     * Edits user's information
+     * @param username
+     * @param newUsername
+     * @param ip
+     * @param port
+     */
     public void editUser(String username, String newUsername, String ip, String port){
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

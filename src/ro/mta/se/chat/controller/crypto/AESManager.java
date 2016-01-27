@@ -7,14 +7,19 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 
-
 /**
  * Created by Dani on 12/21/2015.
  */
 public class AESManager {
 
 
-
+    /**
+     * AES encryption
+     * @param key
+     * @param initVector
+     * @param value
+     * @return base64 encrypted text
+     */
     public static String encrypt(String key, String initVector, String value) {
         try {
 
@@ -35,6 +40,13 @@ public class AESManager {
         return null;
     }
 
+    /**
+     * AES decryption
+     * @param key
+     * @param initVector
+     * @param encrypted
+     * @return decrypted text
+     */
     public static String decrypt(String key, String initVector, String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));

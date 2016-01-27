@@ -63,21 +63,24 @@ public class TabComponents extends JFrame {
     private JMenuItem scrollLayoutItem;
 
 
-    
+    /**
+     * Constructor
+     * @param title Main tab frame title
+     */
     private TabComponents(String title) {
         super(title);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        initMenu();        
+        initMenu();
         add(pane);
         tabComponentsItem.setSelected(true);
         pane.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
         scrollLayoutItem.setSelected(true);
-        setSize(new Dimension(700, 400));
+        //setSize(new Dimension(700, 400));
         setLocationRelativeTo(null);
         setVisible(true);
 
         setSize(500, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         setResizable(false);
 
@@ -85,14 +88,19 @@ public class TabComponents extends JFrame {
 
     }
 
+    /**
+     * Checks if tab is already opened
+     * @param title Tab title
+     * @return 1 if open, 0 otherwise
+     */
     public int exists(String title)
     {
         for( int i = 0; i < pane.getTabCount(); i++)
         {
             if(pane.getTitleAt(i).equals(title))
-                return 1;
+                return i;
         }
-        return 0;
+        return -1;
     }
 
     public int isOpen(String ip, int port) {
@@ -123,23 +131,27 @@ public class TabComponents extends JFrame {
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 
-                        tabComponents.dispose();
-                        tabComponents = null;
+                        tabComponents.setVisible(false);
+                        //tabComponents = null;
                     }
-                    else {
-                        tabComponents.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                    }
+                    //else {
+                     //   tabComponents.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    //}
                 }
             });
         }
+        tabComponents.setVisible(true);
         return tabComponents;
     }
 
     
-    public void addPartner(String partner, String ip, String port, Socket socket, String aesKey) {
-        if(exists(partner) == 1)
+    public void addPartner(String partner, String ip, String port) {
+        int i = exists(partner);
+        if(i != -1) {
+            pane.getComponentAt(i).setVisible(true);
             return;
-        ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port, socket, aesKey);
+        }
+        ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port);
         tabComponents.tabList.add(chatRoomPanel);
         pane.add(partner, chatRoomPanel);
         initTabComponent(pane.getTabCount() - 1);
@@ -147,6 +159,7 @@ public class TabComponents extends JFrame {
     
     
     private void initTabComponent(int i) {
+
         pane.setTabComponentAt(i, new ButtonTabComponent(pane));
     }    
 
@@ -196,6 +209,10 @@ public class TabComponents extends JFrame {
         //optionsMenu.add(resetItem);
         menuBar.add(optionsMenu);
         setJMenuBar(menuBar);
+    }
+
+    public JTabbedPane getPane (){
+        return pane;
     }
 }
 

@@ -1,17 +1,11 @@
 package ro.mta.se.chat.controller.crypto;
 
-import sun.security.provider.MD5;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
-import java.lang.Object;
 import javax.crypto.Cipher;
-import java.security.Security;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
 import javax.crypto.EncryptedPrivateKeyInfo;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -34,12 +28,12 @@ public class RSAKeysManager {
     /**
      * String to hold the name of the private key file.
      */
-    public static final String PRIVATE_KEY_FILE = "src/private_key.bin";
+    public static final String PRIVATE_KEY_FILE = "docs/private_key.bin";
 
     /**
      * String to hold name of the public key file.
      */
-    public static final String PUBLIC_KEY_FILE = "src/public_key.bin";
+    public static final String PUBLIC_KEY_FILE = "docs/public_key.bin";
 
     /**
      *
@@ -58,6 +52,12 @@ public class RSAKeysManager {
         }
     }
 
+    /**
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     public static boolean login(String username, String password){
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -74,6 +74,11 @@ public class RSAKeysManager {
         return false;
     }
 
+    /**
+     *
+     * @param infile
+     * @return
+     */
     private static byte[] getFileBytes(String infile){
         File f = new File(infile) ;
         int sizecontent = ((int) f.length());
@@ -92,6 +97,10 @@ public class RSAKeysManager {
         }
     }
 
+    /**
+     *
+     * @param data
+     */
     private static void displayData(byte[] data)
     {
         int bytecon = 0;    //to get unsigned byte representation
@@ -106,6 +115,10 @@ public class RSAKeysManager {
         }
     }
 
+    /**
+     *
+     * @param publicKey
+     */
     public static void savePublicKeyToDisk(PublicKey publicKey){
         try {
             File publicKeyFile = new File(PUBLIC_KEY_FILE);
@@ -127,6 +140,11 @@ public class RSAKeysManager {
         }
     }
 
+    /**
+     *
+     * @param privateKey
+     * @param hash
+     */
     public static void savePrivateKeyToDisk(PrivateKey privateKey, String hash){
 
         try {
