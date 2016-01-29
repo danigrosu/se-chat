@@ -7,6 +7,8 @@ import ro.mta.se.chat.model.CurrentConfiguration;
 import ro.mta.se.chat.model.User;
 import ro.mta.se.chat.model.XmlDbParser;
 import ro.mta.se.chat.observers.MessageObserver;
+import ro.mta.se.chat.utils.Level;
+import ro.mta.se.chat.utils.Logger;
 import ro.mta.se.chat.view.CurrentUserOptions;
 import ro.mta.se.chat.view.FriendsList;
 import ro.mta.se.chat.view.TabComponents;
@@ -57,99 +59,113 @@ public class MainFrame extends JFrame {
 
         friendsList.addUserClickedListener(new UserClickedListener() {
             public void userClickedEventOccurred(UserClickedEvent event) {
-                String userClicked = event.getUser();
 
-                userOptions.removeAll();
+                try {
 
-                User clickedUser = DatabaseAdapter.getUserData(userClicked);
+                    String userClicked = event.getUser();
 
-                //userOptionPanel.setVisible(false);
-                // name
+                    userOptions.removeAll();
 
-                JLabel labelName = new JLabel("Name: ");
-                JTextField textName = new JTextField(10);
-                textName.setText(userClicked);
+                    User clickedUser = DatabaseAdapter.getUserData(userClicked);
 
+                    //userOptionPanel.setVisible(false);
+                    // name
 
-                // ip
-                JLabel labelIp = new JLabel("Ip: ");
-                JTextField textIp = new JTextField(10);
-                textIp.setText(clickedUser.getIp());
+                    JLabel labelName = new JLabel("Name: ");
+                    JTextField textName = new JTextField(10);
+                    textName.setText(userClicked);
 
 
-                // port
-                JLabel labelPort = new JLabel("Port: ");
-                JTextField textPort = new JTextField(10);
-                textPort.setText(clickedUser.getPort());
+                    // ip
+                    JLabel labelIp = new JLabel("Ip: ");
+                    JTextField textIp = new JTextField(10);
+                    textIp.setText(clickedUser.getIp());
 
-                JButton editButton = new JButton("Edit");
-                editButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String username = textName.getText();
-                        String ip = textIp.getText();
-                        String port = textPort.getText();
 
-                        // TODO: Edit user data
-                        DatabaseAdapter.editUser(userClicked, username, ip, port);
+                    // port
+                    JLabel labelPort = new JLabel("Port: ");
+                    JTextField textPort = new JTextField(10);
+                    textPort.setText(clickedUser.getPort());
 
-                        for (int i = 0; i < friendsList.getListModel().size(); i++) {
+                    JButton editButton = new JButton("Edit");
+                    editButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                String username = textName.getText();
+                                String ip = textIp.getText();
+                                String port = textPort.getText();
 
-                            String oldUsername = friendsList.getListModel().get(i).toString();
+                                // TODO: Edit user data
+                                DatabaseAdapter.editUser(userClicked, username, ip, port);
 
-                            if (oldUsername.equals(userClicked)) {
-                                friendsList.getListModel().remove(i);
-                                friendsList.getListModel().add(i, username);
-                                friendsList.revalidate();
-                                break;
+                                for (int i = 0; i < friendsList.getListModel().size(); i++) {
+
+                                    String oldUsername = friendsList.getListModel().get(i).toString();
+
+                                    if (oldUsername.equals(userClicked)) {
+                                        friendsList.getListModel().remove(i);
+                                        friendsList.getListModel().add(i, username);
+                                        friendsList.revalidate();
+                                        break;
+                                    }
+                                }
+
                             }
+                            catch (Exception ex) {
+                                Logger.log(Level.ERROR, "Exception occurred", ex);
+                            }
+
                         }
+                    });
 
-                    }
-                });
+                    GridBagConstraints gc = new GridBagConstraints();
 
-                GridBagConstraints gc = new GridBagConstraints();
+                    // first column
+                    gc.anchor = GridBagConstraints.LAST_LINE_END;
+                    gc.weightx = 0.5;
+                    gc.weighty = 0.5;
 
-                // first column
-                gc.anchor = GridBagConstraints.LAST_LINE_END;
-                gc.weightx = 0.5;
-                gc.weighty = 0.5;
+                    gc.gridx = 0;
+                    gc.gridy = 0;
+                    userOptions.add(labelName, gc);
 
-                gc.gridx = 0;
-                gc.gridy = 0;
-                userOptions.add(labelName, gc);
+                    gc.gridx = 0;
+                    gc.gridy = 1;
+                    userOptions.add(labelIp, gc);
 
-                gc.gridx = 0;
-                gc.gridy = 1;
-                userOptions.add(labelIp, gc);
-
-                gc.gridx = 0;
-                gc.gridy = 2;
-                userOptions.add(labelPort, gc);
+                    gc.gridx = 0;
+                    gc.gridy = 2;
+                    userOptions.add(labelPort, gc);
 
 
-                // second column
-                gc.anchor = GridBagConstraints.LAST_LINE_START;
-                gc.gridx = 1;
-                gc.gridy = 0;
-                userOptions.add(textName, gc);
+                    // second column
+                    gc.anchor = GridBagConstraints.LAST_LINE_START;
+                    gc.gridx = 1;
+                    gc.gridy = 0;
+                    userOptions.add(textName, gc);
 
-                gc.gridx = 1;
-                gc.gridy = 1;
-                userOptions.add(textIp, gc);
+                    gc.gridx = 1;
+                    gc.gridy = 1;
+                    userOptions.add(textIp, gc);
 
-                gc.gridx = 1;
-                gc.gridy = 2;
-                userOptions.add(textPort, gc);
+                    gc.gridx = 1;
+                    gc.gridy = 2;
+                    userOptions.add(textPort, gc);
 
-                // final
-                gc.weighty = 10;
-                gc.anchor = GridBagConstraints.FIRST_LINE_START;
-                gc.gridx = 1;
-                gc.gridy = 3;
-                userOptions.add(editButton, gc);
+                    // final
+                    gc.weighty = 10;
+                    gc.anchor = GridBagConstraints.FIRST_LINE_START;
+                    gc.gridx = 1;
+                    gc.gridy = 3;
+                    userOptions.add(editButton, gc);
 
-                userOptions.revalidate();
+                    userOptions.revalidate();
+
+                }
+                catch (Exception ex) {
+                    Logger.log(Level.ERROR, "Exception occurred", ex);
+                }
 
             }
         });
@@ -181,8 +197,6 @@ public class MainFrame extends JFrame {
 
                                 //chatBox.setVisible(true);
 
-                                System.out.println("Connect to " + DatabaseAdapter.getUserIp(partner) + ":" +
-                                        DatabaseAdapter.getUserPort(partner));
                             }
                         });
                     }

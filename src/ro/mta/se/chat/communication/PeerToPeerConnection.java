@@ -3,7 +3,10 @@ package ro.mta.se.chat.communication;
 import ro.mta.se.chat.controller.crypto.AESManager;
 import ro.mta.se.chat.controller.crypto.DiffieHellmanFactory;
 import ro.mta.se.chat.model.CurrentConfiguration;
+import ro.mta.se.chat.model.MessageHistory;
 import ro.mta.se.chat.observers.ChatRoomReloadable;
+import ro.mta.se.chat.utils.Level;
+import ro.mta.se.chat.utils.Logger;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,7 +14,6 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
  * Created by Dani on 1/5/2016.
  */
 
@@ -44,9 +46,9 @@ public class PeerToPeerConnection {
      * @return Socket for p2p communication
      * @throws IOException
      */
-    public static synchronized Socket connectToPeer(String username, String ip, int port) throws IOException{
+    public static synchronized Socket connectToPeer(String username, String ip, int port) throws IOException {
 
-        if(CurrentConfiguration.getTheConfiguration().getIp().equals(ip) &&
+        if (CurrentConfiguration.getTheConfiguration().getIp().equals(ip) &&
                 CurrentConfiguration.getTheConfiguration().getPort().equals(Integer.toString(port))) {
             throw new IOException("Cannot connect to yourself!");
         }
@@ -62,7 +64,7 @@ public class PeerToPeerConnection {
         System.out.println("REACH CONNECT");
         Socket s;
         synchronized (PeerToPeerConnection.class) {
-            s = new  Socket(ip, port);
+            s = new Socket(ip, port);
         }
         /// Diffie-Hellman
 
@@ -73,15 +75,14 @@ public class PeerToPeerConnection {
         String p = diffieHellmanFactory.getP();
 
 
-
         OutputStream output = s.getOutputStream();
 
-        if(s.isConnected())
-        output.write(("#PORT#-" + CurrentConfiguration.getTheConfiguration().getPort() + "-" +
-                CurrentConfiguration.getTheConfiguration().getUsername() +
-                "-" + p + "-" + a).getBytes());
+        if (s.isConnected())
+            output.write(("#PORT#-" + CurrentConfiguration.getTheConfiguration().getPort() + "-" +
+                    CurrentConfiguration.getTheConfiguration().getUsername() +
+                    "-" + p + "-" + a).getBytes());
 
-        new Thread(new WorkerRunnable(s, username, 1, diffieHellmanFactory)).start();
+        new Thread(new ClientWorkerRunnable(s, username, diffieHellmanFactory)).start();
 
         return s;
 
@@ -93,38 +94,73 @@ public class PeerToPeerConnection {
      * @param ip
      * @param port
      */
-    public static void sendText(String text, String ip, String port) {
-        try {
+    public static void sendText(String text, String ip, String port, String username) throws Exception {
 
-            PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
+        PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
 
-            OutputStream output = peerInfo.socket.getOutputStream();
-            output.write(AESManager.encrypt(peerInfo.aesKey, "1111111100000000", text).getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (peerInfo.socket.isClosed()) {
+            throw new Exception("Partner " + ip + ":" + port + " left the chat");
         }
+
+        OutputStream output = peerInfo.socket.getOutputStream();
+        output.write(AESManager.encrypt(peerInfo.aesKey, "1111111100000000", text).getBytes());
+
+
+        MessageHistory mh = new MessageHistory(username);
+        mh.storeNewMessage(text, true);
+
+
+    }
+
+    public static void sendFileHead(String filename, String ip, String port, String username) throws Exception {
+        PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
+
+        if (peerInfo.socket.isClosed()) {
+            throw new Exception("Partner " + ip + ":" + port + " left the chat");
+        }
+
+        OutputStream output = peerInfo.socket.getOutputStream();
+        output.write(("#FILE#:" + filename).getBytes());
+    }
+
+    public static void sendFileTail (String filename, String ip, String port, String username) throws Exception {
+        PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
+
+        if (peerInfo.socket.isClosed()) {
+            throw new Exception("Partner " + ip + ":" + port + " left the chat");
+        }
+
+        OutputStream output = peerInfo.socket.getOutputStream();
+        output.write(("#FILEEOF#").getBytes());
+    }
+
+    public static void sendFile(String chunk, String ip, String port, String username) throws Exception {
+        PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
+        if (peerInfo.socket.isClosed()) {
+            throw new Exception("Partner " + ip + ":" + port + " left the chat");
+        }
+
+        OutputStream output = peerInfo.socket.getOutputStream();
+        //output.write(AESManager.encrypt(peerInfo.aesKey, "1111111100000000", chunk).getBytes());
+        chunk = "#FILECHUNK#" + chunk;
+        output.write((chunk).getBytes());
+
+
     }
 
     /**
      *
      * @param myPort
      */
-    public static void acceptConnection(int myPort) {
-        try {
+    public static void acceptConnection(int myPort) throws Exception{
             openServerSocket(myPort);
 
             while (true) {
                 Socket peerSocket = socket.accept();
 
-                DiffieHellmanFactory df = new DiffieHellmanFactory();
-
-                new Thread(new WorkerRunnable(peerSocket, null, 0, df)).start();
+                new Thread(new ServerWorkerRunnable(peerSocket)).start();
 
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -151,13 +187,11 @@ public class PeerToPeerConnection {
      *
      * @param myPort
      */
-    private static void openServerSocket(int myPort) {
-        try {
-            socket = new ServerSocket(myPort);
-            System.out.println("Listening on " + myPort);
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot open port " + myPort, e);
-        }
+    private static void openServerSocket(int myPort) throws Exception{
+
+        socket = new ServerSocket(myPort);
+        System.out.println("Listening on " + myPort);
+
     }
 
     /**
@@ -169,6 +203,14 @@ public class PeerToPeerConnection {
     public static String getStringFromInputStream(InputStream is) throws IOException {
         byte[] in = new byte[2048];
         int size = is.read(in);
+        String out = new String(in, 0, size);
+        //return out.replace("\n","").replace("\r", "");
+        return out;
+    }
+
+    public static String getStringFromInputStream(InputStream is, int chunkSize) throws IOException {
+        byte[] in = new byte[2048];
+        int size = is.read(in,0,chunkSize);
         String out = new String(in, 0, size);
         //return out.replace("\n","").replace("\r", "");
         return out;

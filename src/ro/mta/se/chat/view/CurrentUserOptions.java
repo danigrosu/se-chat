@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- *
  * Created by Dani on 12/21/2015.
  */
 public class CurrentUserOptions extends JPanel {
@@ -37,6 +36,8 @@ public class CurrentUserOptions extends JPanel {
         textIp.setText(cc.getIp());
 
 
+        GridBagConstraints gc = new GridBagConstraints();
+
         // port
         JLabel labelPort = new JLabel("Port: ");
         JTextField textPort = new JTextField(10);
@@ -46,38 +47,50 @@ public class CurrentUserOptions extends JPanel {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 String name = textName.getText();
                 String ip = textIp.getText();
                 String port = textPort.getText();
 
-                CurrentConfiguration.setUsername(name);
-                CurrentConfiguration.setIp(ip);
-                CurrentConfiguration.setPort(port);
-
-                // TODO: Edit user data
-                DatabaseAdapter.editUser(cc.getUsername() ,name, ip, port);
                 try {
+
+
+                    CurrentConfiguration.setUsername(name);
+                    CurrentConfiguration.setIp(ip);
+                    CurrentConfiguration.setPort(port);
+
+                    // TODO: Edit user data
+                    DatabaseAdapter.editUser(cc.getUsername(), name, ip, port);
+
 
                     Thread t = new Thread(new Runnable() {
                         public void run() {
-                            PeerToPeerConnection.acceptConnection(Integer.parseInt(port));
-                    }});
+                            try {
+                                PeerToPeerConnection.acceptConnection(Integer.parseInt(port));
+                            }
+                            catch (Exception e) {
+                                JOptionPane.showMessageDialog(null, "Could not connect on port " + port,
+                                        "Error on connect", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    });
                     t.start();
 
-                    JOptionPane.showMessageDialog(null, "Your IP: " + ip + "\nYour port: " + port, "Chat enabled", JOptionPane.INFORMATION_MESSAGE);
-                }
-                catch (Exception ex){
-                    JOptionPane.showMessageDialog(null, "Could not connect on port " + port, "Error on connect", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Your IP: " + ip + "\nYour port: " + port,
+                            "Chat enabled", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Could not connect on port " + port,
+                            "Error on connect", JOptionPane.ERROR_MESSAGE);
 
                 }
-
 
 
             }
         });
 
 
-        GridBagConstraints gc = new GridBagConstraints();
+        //GridBagConstraints gc = new GridBagConstraints();
 
         // first column
         gc.anchor = GridBagConstraints.LAST_LINE_END;
@@ -112,7 +125,7 @@ public class CurrentUserOptions extends JPanel {
         add(textPort, gc);
 
         // final
-        gc.weighty = 10;
+        gc.weighty = 15;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.gridx = 1;
         gc.gridy = 3;

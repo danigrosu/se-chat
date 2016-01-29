@@ -3,7 +3,6 @@ package ro.mta.se.chat.observers;
 import ro.mta.se.chat.view.TabComponents;
 
 /**
- *
  * Created by Dani on 1/27/2016.
  */
 public class ChatRoomReloadable {

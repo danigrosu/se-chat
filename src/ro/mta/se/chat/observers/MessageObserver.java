@@ -1,13 +1,10 @@
 package ro.mta.se.chat.observers;
 
-import ro.mta.se.chat.controller.ButtonTabComponent;
+import ro.mta.se.chat.model.MessageHistory;
 import ro.mta.se.chat.view.ChatRoomPanel;
 import ro.mta.se.chat.view.TabComponents;
 
 import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
-import java.awt.*;
-import java.net.Socket;
 import java.util.LinkedList;
 
 /**
@@ -58,17 +55,30 @@ public class MessageObserver {
      * @param port
      * @param message
      */
-    public void notifyView(String ip, String port, String message) {
+    public void notifyView(String username, String ip, String port, String message) {
         int i = 0;
         for (; i < list.size(); i++) {
             ChatRoomPanel chatRoomPanel = list.get(i);
             if (chatRoomPanel.getPort() == Integer.parseInt(port) && chatRoomPanel.getIp().equals(ip)) {
                 chatRoomPanel.appendTextAreaPrint(chatRoomPanel.getPartner() + ": " + message);
 
-                UIManager.put("textForeground", new ColorUIResource(255, 142, 66));
+                MessageHistory mh = new MessageHistory(username);
+                mh.storeNewMessage(message, false);
 
+                //TabComponents.getTabComponents("Chat room").getPane().setBackgroundAt(i, UIManager.getColor("textForeground"));
 
-                TabComponents.getTabComponents("Chat room").getPane().setBackgroundAt(i, UIManager.getColor("textForeground"));
+                break;
+            }
+        }
+    }
+
+    public void notifyViewOnLeave(String ip, String port) {
+        int i = 0;
+        for (; i < list.size(); i++) {
+            ChatRoomPanel chatRoomPanel = list.get(i);
+            if (chatRoomPanel.getPort() == Integer.parseInt(port) && chatRoomPanel.getIp().equals(ip)) {
+                chatRoomPanel.appendTextAreaPrint(chatRoomPanel.getPartner() + " left the chat!");
+
 
                 break;
             }

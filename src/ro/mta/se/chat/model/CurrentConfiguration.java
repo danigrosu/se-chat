@@ -7,6 +7,7 @@ public class CurrentConfiguration {
     private String username;
     private String ip;
     private String port;
+    private boolean connected;
     private static CurrentConfiguration theConfiguration = null;
 
     private CurrentConfiguration(String username, String ip, String port) {
@@ -15,13 +16,34 @@ public class CurrentConfiguration {
         this.port = port;
     }
 
+    private CurrentConfiguration() {
+        this.connected = true;
+    }
+
     public static CurrentConfiguration getTheConfiguration() {
+        if (theConfiguration == null) {
+            theConfiguration = new CurrentConfiguration();
+        }
         return theConfiguration;
     }
 
     public static CurrentConfiguration getTheConfiguration(String username, String ip, String port) {
-        theConfiguration = new CurrentConfiguration(username, ip, port);
+        if (theConfiguration == null)
+            theConfiguration = new CurrentConfiguration(username, ip, port);
+        else {
+            theConfiguration.username = username;
+            theConfiguration.ip = ip;
+            theConfiguration.port = port;
+        }
         return theConfiguration;
+    }
+
+    public void setConnected() {
+        theConfiguration.connected = true;
+    }
+
+    public boolean getConnected () {
+        return theConfiguration.connected;
     }
 
     public String getUsername() {

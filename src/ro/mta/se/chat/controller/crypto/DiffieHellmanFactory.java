@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.Random;
 
 /**
- *
  * Created by Dani on 1/26/2016.
  */
 public class DiffieHellmanFactory {
@@ -17,6 +16,7 @@ public class DiffieHellmanFactory {
 
     /**
      * Function that generates the P prime number of D-F
+     *
      * @return prime number of 1024 bits
      */
     private String generateP() {
@@ -27,6 +27,7 @@ public class DiffieHellmanFactory {
 
     /**
      * Generates the private key
+     *
      * @return Private key as String
      */
     private String generatePrivate() {
@@ -37,6 +38,7 @@ public class DiffieHellmanFactory {
 
     /**
      * Computes the public key
+     *
      * @return Public key as String
      */
     public String computePublic() {
@@ -50,7 +52,6 @@ public class DiffieHellmanFactory {
     }
 
     /**
-     *
      * @param p The p number sent by partner
      * @return Public key as String
      */
@@ -67,6 +68,7 @@ public class DiffieHellmanFactory {
 
     /**
      * Computes the session key based on partner's public key
+     *
      * @param peerPublic Public key of partner
      * @return The session key as String
      * @throws NullPointerException
@@ -81,7 +83,6 @@ public class DiffieHellmanFactory {
     }
 
     /**
-     *
      * @return Number p as String
      * @throws NullPointerException
      */
@@ -90,7 +91,6 @@ public class DiffieHellmanFactory {
     }
 
     /**
-     *
      * @return Number g as String
      * @throws NullPointerException
      */
@@ -99,7 +99,6 @@ public class DiffieHellmanFactory {
     }
 
     /**
-     *
      * @return Private key
      * @throws NullPointerException
      */
@@ -108,7 +107,6 @@ public class DiffieHellmanFactory {
     }
 
     /**
-     *
      * @return Session key
      * @throws NullPointerException
      */

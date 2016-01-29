@@ -1,6 +1,8 @@
 package ro.mta.se.chat.controller.crypto;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import ro.mta.se.chat.utils.Level;
+import ro.mta.se.chat.utils.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -15,6 +17,7 @@ public class AESManager {
 
     /**
      * AES encryption
+     *
      * @param key
      * @param initVector
      * @param value
@@ -34,7 +37,7 @@ public class AESManager {
 
             return Base64.encode(encrypted);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.log(Level.ERROR, "Exception occurred", ex);
         }
 
         return null;
@@ -42,6 +45,7 @@ public class AESManager {
 
     /**
      * AES decryption
+     *
      * @param key
      * @param initVector
      * @param encrypted
@@ -58,7 +62,7 @@ public class AESManager {
             byte[] original = cipher.doFinal(Base64.decode(encrypted));
             return new String(original);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.log(Level.ERROR, "Exception occurred", ex);
         }
 
         return null;

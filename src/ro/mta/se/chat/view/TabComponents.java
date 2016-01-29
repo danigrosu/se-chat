@@ -52,7 +52,7 @@ import ro.mta.se.chat.controller.*;
 
 /*
  * Creating and using view.TabComponents example
- */ 
+ */
 public class TabComponents extends JFrame {
 
     private static TabComponents tabComponents;
@@ -65,6 +65,7 @@ public class TabComponents extends JFrame {
 
     /**
      * Constructor
+     *
      * @param title Main tab frame title
      */
     private TabComponents(String title) {
@@ -90,14 +91,13 @@ public class TabComponents extends JFrame {
 
     /**
      * Checks if tab is already opened
+     *
      * @param title Tab title
      * @return 1 if open, 0 otherwise
      */
-    public int exists(String title)
-    {
-        for( int i = 0; i < pane.getTabCount(); i++)
-        {
-            if(pane.getTitleAt(i).equals(title))
+    public int exists(String title) {
+        for (int i = 0; i < pane.getTabCount(); i++) {
+            if (pane.getTitleAt(i).equals(title))
                 return i;
         }
         return -1;
@@ -114,29 +114,17 @@ public class TabComponents extends JFrame {
         return 0;
     }
 
-    public  LinkedList<ChatRoomPanel> getTabList(){
+    public LinkedList<ChatRoomPanel> getTabList() {
         return tabComponents.tabList;
     }
 
-    public static TabComponents getTabComponents(String title)
-    {
-        if(tabComponents == null)
-        {
+    public static TabComponents getTabComponents(String title) {
+        if (tabComponents == null) {
             tabComponents = new TabComponents(title);
             tabComponents.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                    if (JOptionPane.showConfirmDialog(tabComponents,
-                            "Are you sure to close this window?", "Really Closing?",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 
-                        tabComponents.setVisible(false);
-                        //tabComponents = null;
-                    }
-                    //else {
-                     //   tabComponents.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                    //}
                 }
             });
         }
@@ -144,10 +132,10 @@ public class TabComponents extends JFrame {
         return tabComponents;
     }
 
-    
+
     public void addPartner(String partner, String ip, String port) {
         int i = exists(partner);
-        if(i != -1) {
+        if (i != -1) {
             pane.getComponentAt(i).setVisible(true);
             return;
         }
@@ -156,15 +144,15 @@ public class TabComponents extends JFrame {
         pane.add(partner, chatRoomPanel);
         initTabComponent(pane.getTabCount() - 1);
     }
-    
-    
+
+
     private void initTabComponent(int i) {
 
         pane.setTabComponentAt(i, new ButtonTabComponent(pane));
-    }    
+    }
 
     //Setting menu
-    
+
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
         //create Options menu
@@ -194,24 +182,16 @@ public class TabComponents extends JFrame {
             }
         });
 
-        //JMenuItem resetItem = new JMenuItem("Reset JTabbedPane");
-        //resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
-        //resetItem.addActionListener(new ActionListener() {
-            //public void actionPerformed(ActionEvent e) {
-            //    runTest();
-            //}
-       // });
-       
+
         JMenu optionsMenu = new JMenu("Options");
         optionsMenu.add(scrollLayoutItem);
         optionsMenu.add(tabComponentsItem);
 
-        //optionsMenu.add(resetItem);
         menuBar.add(optionsMenu);
         setJMenuBar(menuBar);
     }
 
-    public JTabbedPane getPane (){
+    public JTabbedPane getPane() {
         return pane;
     }
 }

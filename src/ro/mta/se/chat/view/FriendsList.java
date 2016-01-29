@@ -63,85 +63,91 @@ public class FriendsList extends JPanel
     public FriendsList() {
         super(new BorderLayout());
 
-        ArrayList<User> friends = new XmlDbParser().getAllFriends();
 
-        listModel = new DefaultListModel();
+        try {
+            ArrayList<User> friends = DatabaseAdapter.getAllFriends();
 
-        for (int i = 0; i < friends.size(); i++) {
-            listModel.addElement(friends.get(i).getName());
+            listModel = new DefaultListModel();
+
+            for (int i = 0; i < friends.size(); i++) {
+                listModel.addElement(friends.get(i).getName());
+            }
+
+
+            //Create the list and put it in a scroll pane.
+            list = new JList(listModel);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.setSelectedIndex(0);
+            list.addListSelectionListener(this);
+            list.setVisibleRowCount(5);
+            JScrollPane listScrollPane = new JScrollPane(list);
+
+            JButton addButton = new JButton(addString);
+            AddListener addListener = new AddListener(addButton);
+            addButton.setActionCommand(addString);
+            addButton.addActionListener(addListener);
+            addButton.setEnabled(false);
+
+            removeButton = new JButton(removeString);
+            removeButton.setActionCommand(removeString);
+            removeButton.addActionListener(new RemoveListener());
+
+            JPanel friendPanel = new JPanel();
+            friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.LINE_AXIS));
+
+            friendName = new JTextField(20);
+            friendName.addActionListener(addListener);
+            friendName.getDocument().addDocumentListener(addListener);
+            JLabel lab1 = new JLabel("Name:");
+            String name = listModel.getElementAt(list.getSelectedIndex()).toString();
+
+            friendPanel.add(lab1);
+            friendPanel.add(friendName);
+
+            JPanel ipPanel = new JPanel();
+            ipPanel.setLayout(new BoxLayout(ipPanel,
+                    BoxLayout.LINE_AXIS));
+
+            ipText = new JTextField(15);
+            //ipText.addActionListener(addListener);
+            //ipText.getDocument().addDocumentListener(addListener);
+            JLabel lab2 = new JLabel("IP:");
+
+            ipPanel.add(lab2);
+            ipPanel.add(ipText);
+
+            JPanel portPanel = new JPanel();
+            portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.LINE_AXIS));
+
+            portText = new JTextField(6);
+            JLabel lab3 = new JLabel("Port:");
+
+            portPanel.add(lab3);
+            portPanel.add(portText);
+
+
+            //Create a panel that uses BoxLayout.
+            JPanel buttonPane = new JPanel();
+            buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.Y_AXIS));
+            buttonPane.add(removeButton);
+            buttonPane.add(Box.createHorizontalStrut(5));
+            buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
+            buttonPane.add(Box.createHorizontalStrut(5));
+            buttonPane.add(friendPanel);
+            buttonPane.add(ipPanel);
+            buttonPane.add(portPanel);
+
+
+            buttonPane.add(addButton);
+            buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+            add(listScrollPane, BorderLayout.CENTER);
+            add(buttonPane, BorderLayout.PAGE_END);
+
         }
-
-
-        //Create the list and put it in a scroll pane.
-        list = new JList(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        list.addListSelectionListener(this);
-        list.setVisibleRowCount(5);
-        JScrollPane listScrollPane = new JScrollPane(list);
-
-        JButton addButton = new JButton(addString);
-        AddListener addListener = new AddListener(addButton);
-        addButton.setActionCommand(addString);
-        addButton.addActionListener(addListener);
-        addButton.setEnabled(false);
-
-        removeButton = new JButton(removeString);
-        removeButton.setActionCommand(removeString);
-        removeButton.addActionListener(new RemoveListener());
-
-        JPanel friendPanel = new JPanel();
-        friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.LINE_AXIS));
-
-        friendName = new JTextField(20);
-        friendName.addActionListener(addListener);
-        friendName.getDocument().addDocumentListener(addListener);
-        JLabel lab1 = new JLabel("Name:");
-        String name = listModel.getElementAt(list.getSelectedIndex()).toString();
-
-        friendPanel.add(lab1);
-        friendPanel.add(friendName);
-
-        JPanel ipPanel = new JPanel();
-        ipPanel.setLayout(new BoxLayout(ipPanel,
-                BoxLayout.LINE_AXIS));
-
-        ipText = new JTextField(15);
-        //ipText.addActionListener(addListener);
-        //ipText.getDocument().addDocumentListener(addListener);
-        JLabel lab2 = new JLabel("IP:");
-
-        ipPanel.add(lab2);
-        ipPanel.add(ipText);
-
-        JPanel portPanel = new JPanel();
-        portPanel.setLayout(new BoxLayout(portPanel, BoxLayout.LINE_AXIS));
-
-        portText = new JTextField(6);
-        JLabel lab3 = new JLabel("Port:");
-
-        portPanel.add(lab3);
-        portPanel.add(portText);
-
-
-        //Create a panel that uses BoxLayout.
-        JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.Y_AXIS));
-        buttonPane.add(removeButton);
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(friendPanel);
-        buttonPane.add(ipPanel);
-        buttonPane.add(portPanel);
-
-
-        buttonPane.add(addButton);
-        buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        add(listScrollPane, BorderLayout.CENTER);
-        add(buttonPane, BorderLayout.PAGE_END);
-
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
 
     }
 
@@ -215,37 +221,42 @@ public class FriendsList extends JPanel
             String ip = ipText.getText();
             String port = portText.getText();
 
-            //model.User didn't type in a unique name...
-            if (name.equals("") || ip.equals("") || port.equals("") || alreadyInList(name)) {
-                Toolkit.getDefaultToolkit().beep();
+            try {
+                //model.User didn't type in a unique name...
+                if (name.equals("") || ip.equals("") || port.equals("") || alreadyInList(name)) {
+                    Toolkit.getDefaultToolkit().beep();
+                    friendName.requestFocusInWindow();
+                    friendName.selectAll();
+
+
+                    return;
+                }
+
+                int index = list.getSelectedIndex(); //get selected index
+                if (index == -1) { //no selection, so insert at beginning
+                    index = 0;
+                } else {           //add after the selected item
+                    index++;
+                }
+
+                listModel.insertElementAt(friendName.getText(), index);
+
+                //If we just wanted to add to the end, we'd do this:
+                //listModel.addElement(friendName.getText());
+
+                //Reset the text field.
                 friendName.requestFocusInWindow();
-                friendName.selectAll();
+                friendName.setText("");
 
+                //Select the new item and make it visible.
+                list.setSelectedIndex(index);
+                list.ensureIndexIsVisible(index);
 
-                return;
+                DatabaseAdapter.addUser(name, ip, port);
             }
-
-            int index = list.getSelectedIndex(); //get selected index
-            if (index == -1) { //no selection, so insert at beginning
-                index = 0;
-            } else {           //add after the selected item
-                index++;
+            catch (Exception ex) {
+                System.out.println(ex.getMessage());
             }
-
-            listModel.insertElementAt(friendName.getText(), index);
-
-            //If we just wanted to add to the end, we'd do this:
-            //listModel.addElement(friendName.getText());
-
-            //Reset the text field.
-            friendName.requestFocusInWindow();
-            friendName.setText("");
-
-            //Select the new item and make it visible.
-            list.setSelectedIndex(index);
-            list.ensureIndexIsVisible(index);
-
-            DatabaseAdapter.addUser(name, ip, port);
         }
 
         //This method tests for string equality. You could certainly

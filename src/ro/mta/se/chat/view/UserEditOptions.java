@@ -4,15 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- *
  * Created by Dani on 11/23/2015.
  */
-public class UserEditOptions extends JPanel{
+public class UserEditOptions extends JPanel {
 
 
-
-    public UserEditOptions()
-    {
+    public UserEditOptions() {
         Dimension size = getPreferredSize();
         size.width = 195;
         size.height = 120;
@@ -21,7 +18,6 @@ public class UserEditOptions extends JPanel{
 
         setLayout(new GridBagLayout());
     }
-
 
 
 }

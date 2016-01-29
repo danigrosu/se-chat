@@ -5,6 +5,8 @@ import ro.mta.se.chat.controller.MainFrame;
 import ro.mta.se.chat.controller.crypto.AESManager;
 import ro.mta.se.chat.controller.crypto.RSAKeysManager;
 import ro.mta.se.chat.model.CurrentConfiguration;
+import ro.mta.se.chat.utils.Level;
+import ro.mta.se.chat.utils.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -55,27 +57,34 @@ public class Login extends JFrame {
             loginButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                try {
+                    if (RSAKeysManager.login(textName.getText(), String.valueOf(textPass.getPassword()))) {
 
-                    if(RSAKeysManager.login(textName.getText(), String.valueOf(textPass.getPassword()))) {
+                        CurrentConfiguration currentConfiguration = CurrentConfiguration.getTheConfiguration();
+                        currentConfiguration.setConnected();
 
                         CurrentConfiguration.getTheConfiguration(textName.getText(), DatabaseAdapter.getUserIp(
-                                        textName.getText()), DatabaseAdapter.getUserPort(textName.getText()));
+                                textName.getText()), DatabaseAdapter.getUserPort(textName.getText()));
 
                         JFrame frame = new MainFrame("LiveChat");
                         frame.setSize(400, 500);
                         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         frame.setVisible(true);
                         frame.setResizable(false);
-                        frame.setLocation(100,100);
+                        frame.setLocation(100, 100);
                         dispose();
 
 
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null,"Authentication failed!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Authentication failed!");
+                        throw new Exception("Authentication failed!");
 
-
                     }
+
+                }
+                catch (Exception ex) {
+                    Logger.log(Level.ERROR,"Exception occurred",ex);
+                }
 
                 }
             });
@@ -188,7 +197,7 @@ public class Login extends JFrame {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.log(Level.ERROR, "Exception occurred", e);
         }
 
     }

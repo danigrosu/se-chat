@@ -1,14 +1,18 @@
 package ro.mta.se.chat.model; /**
- *
  * Created by Dani on 11/23/2015.
  */
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import ro.mta.se.chat.proxy.DatabaseProxy;
+import ro.mta.se.chat.utils.Level;
+import ro.mta.se.chat.utils.Logger;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -19,21 +23,23 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 
-
 public class XmlDbParser {
 
-    public static  final String DATABASE_PATH = "docs/chat_database.xml";
+    //public static final String DATABASE_PATH = "docs/chat_database.xml";
 
     /**
      * Function that gets all friends from database
      * @return
      */
-    public ArrayList<User> getAllFriends() {
+    public ArrayList<User> getAllFriends() throws Exception {
+
+        if (!new DatabaseProxy().isConnected())
+            throw new Exception("Not connected!");
 
         ArrayList<User> users = new ArrayList<>();
         try {
 
-            File fXmlFile = new File(DATABASE_PATH);
+            File fXmlFile = new File(DatabaseProxy.DATABASE_PATH);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
@@ -61,7 +67,7 @@ public class XmlDbParser {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(Level.ERROR, "Exception occurred", e);
         }
 
         return users;
@@ -72,13 +78,16 @@ public class XmlDbParser {
      * @param userName Username
      * @return User object
      */
-    public User getUserData(String userName)
-    {
+    public User getUserData(String userName) throws Exception{
+
+        if (!new DatabaseProxy().isConnected())
+            throw new Exception("Not connected!");
+
         User user = null;
 
         try {
 
-            File fXmlFile = new File(DATABASE_PATH);
+            File fXmlFile = new File(DatabaseProxy.DATABASE_PATH);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
@@ -86,7 +95,6 @@ public class XmlDbParser {
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("friend");
-
 
 
             for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -98,14 +106,14 @@ public class XmlDbParser {
 
                     Element eElement = (Element) nNode;
 
-                    if(eElement.getAttribute("name").equals(userName) )
+                    if (eElement.getAttribute("name").equals(userName))
                         user = new User(eElement.getAttribute("id"), eElement.getAttribute("name"),
                                 eElement.getAttribute("ip"), eElement.getAttribute("port"));
                 }
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(Level.ERROR, "Exception occurred", e);
         }
 
         return user;
@@ -115,13 +123,16 @@ public class XmlDbParser {
      * Adds a new user to database
      * @param user
      */
-    public void addUser(User user)
-    {
+    public void addUser(User user) throws Exception{
+
+        if (!new DatabaseProxy().isConnected())
+            throw new Exception("Not connected!");
+
         try {
 
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(DATABASE_PATH);
+            Document document = documentBuilder.parse(DatabaseProxy.DATABASE_PATH);
             Element root = document.getDocumentElement();
 
             String countStr = root.getAttribute("count");
@@ -134,21 +145,19 @@ public class XmlDbParser {
             friend.setAttribute("port", user.getPort());
             root.appendChild(friend);
 
-            root.setAttribute("count",count + "");
+            root.setAttribute("count", count + "");
 
 
             DOMSource source = new DOMSource(document);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            StreamResult result = new StreamResult(DATABASE_PATH);
+            StreamResult result = new StreamResult(DatabaseProxy.DATABASE_PATH);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(source, result);
 
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Logger.log(Level.ERROR, "Exception occurred", e);
         }
 
     }
@@ -160,18 +169,22 @@ public class XmlDbParser {
      * @param ip
      * @param port
      */
-    public void editUser(String username, String newUsername, String ip, String port){
+    public void editUser(String username, String newUsername, String ip, String port) throws Exception{
+
+        if (!new DatabaseProxy().isConnected())
+            throw new Exception("Not connected!");
+
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(DATABASE_PATH);
+            Document document = documentBuilder.parse(DatabaseProxy.DATABASE_PATH);
             Element root = document.getDocumentElement();
 
             NodeList list = root.getElementsByTagName("friend");
 
-            for (int i = 0; i < list.getLength(); i++){
+            for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
-                if (username.equals(node.getAttributes().getNamedItem("name").getTextContent())){
+                if (username.equals(node.getAttributes().getNamedItem("name").getTextContent())) {
                     node.getAttributes().getNamedItem("name").setTextContent(newUsername);
                     node.getAttributes().getNamedItem("ip").setTextContent(ip);
                     node.getAttributes().getNamedItem("port").setTextContent(port);
@@ -183,12 +196,11 @@ public class XmlDbParser {
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            StreamResult result = new StreamResult(DATABASE_PATH);
+            StreamResult result = new StreamResult(DatabaseProxy.DATABASE_PATH);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(source, result);
-        }
-        catch(Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            Logger.log(Level.ERROR, "Exception occurred", e);
         }
     }
 }
