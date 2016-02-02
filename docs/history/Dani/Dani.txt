@@ -1,0 +1,130 @@
+error?2016/01/28 12:47:50
+test d-f : 2016/01/28 13:23:27
+test f-d : 2016/01/28 13:23:34
+sfsadfasfasfasd : 2016/01/28 13:24:22
+Dani: salut : 2016/01/28 13:30:48
+Dani: 12212 : 2016/01/28 13:38:12
+Florin: 2131231 : 2016/01/28 13:38:16
+Dani: salut boss : 2016/01/28 13:40:45
+Florin: ce faci? : 2016/01/28 13:40:53
+Dani: bine merci : 2016/01/28 13:40:58
+Dani: sdfsdfsfs : 2016/01/28 14:42:28
+Florin: sefsefs : 2016/01/28 14:42:33
+Dani: salut : 2016/01/28 15:16:59
+Florin: daaaaaaaa, avem history : 2016/01/28 15:17:39
+Dani: bun bun : 2016/01/28 15:17:50
+Dani: 123 : 2016/01/28 15:17:58
+Dani: testare again : 2016/01/28 17:40:39
+Florin: test ok : 2016/01/28 17:40:49
+Dani: ack : 2016/01/28 17:40:56
+Florin: testare : 2016/01/28 17:46:39
+Dani: test ok : 2016/01/28 17:46:51
+Florin: 111 : 2016/01/28 20:11:43
+Florin: salut : 2016/01/28 20:12:06
+Dani: salut : 2016/01/29 01:25:07
+Florin: buna : 2016/01/29 01:25:13
+Dani: salut : 2016/01/29 02:03:24
+Florin: am primit : 2016/01/29 02:03:30
+Dani: salut : 2016/01/29 09:59:51
+Florin: primit : 2016/01/29 10:00:01
+Dani: ai primit? : 2016/01/29 10:06:44
+Florin: da : 2016/01/29 10:06:51
+Dani: saaa : 2016/01/29 10:46:37
+Dani: File ccnet.docx received : 2016/01/29 10:46:47
+Dani: 11 : 2016/01/29 10:51:02
+Florin: 12112 : 2016/01/29 10:51:07
+Dani: File 2016 received : 2016/01/29 10:54:14
+Florin: fhft : 2016/01/29 10:55:14
+Dani: Receiving file:  20160119_155302.jpg : 2016/01/29 10:57:44
+Dani: File 20160119_155302.jpg received : 2016/01/29 10:58:33
+Florin: am primit : 2016/01/29 10:59:12
+Dani: Receiving file:  20160119_155302.jpg : 2016/01/29 10:59:40
+Florin: primesc acum : 2016/01/29 10:59:49
+Florin: merge greu : 2016/01/29 11:00:16
+Dani: File 20160119_155302.jpg received : 2016/01/29 11:00:29
+Florin: gata : 2016/01/29 11:00:34
+Dani: Receiving file:  ccnet.docx : 2016/01/29 11:05:18
+Dani: File ccnet.docx received : 2016/01/29 11:05:18
+Florin: hala madrid : 2016/01/29 11:09:25
+Dani: Receiving file:  blocuri.pl : 2016/01/29 11:48:43
+Dani: Receiving file:  blocuri.pl : 2016/01/29 11:58:22
+Dani: File blocuri.pl received : 2016/01/29 11:58:22
+Dani: Receiving file:  blocuri.pl : 2016/01/29 11:58:59
+Dani: File blocuri.pl received : 2016/01/29 11:58:59
+Dani: Receiving file:  2016-01-12 20-06-19_0003.jpg : 2016/01/29 12:11:25
+Dani: Receiving file:  2016-01-12 20-06-19_0003.jpg : 2016/01/29 12:14:08
+Dani: File 2016-01-12 20-06-19_0003.jpg received : 2016/01/29 12:14:11
+Florin: primit : 2016/01/29 12:14:44
+Dani: ok : 2016/01/29 12:14:49
+Dani: Receiving file:  20160119_151944.jpg : 2016/01/29 12:23:48
+Dani: File 20160119_151944.jpg received : 2016/01/29 12:24:08
+Dani: test : 2016/01/29 12:24:22
+Florin: ack : 2016/01/29 12:24:29
+Florin: 122 : 2016/01/29 12:26:12
+Dani: opopopop : 2016/01/29 12:26:32
+Dani: salut frate : 2016/02/01 00:54:37
+Florin: testarea aplicatiei : 2016/02/01 00:54:48
+Dani: Receiving file:  2016-01-12 20-05-28_0002.jpg : 2016/02/01 00:55:10
+Dani: File 2016-01-12 20-05-28_0002.jpg received : 2016/02/01 00:55:13
+Dani: Receiving file:  20160119_155302.jpg : 2016/02/01 00:55:38
+Florin: cica primesc ceva : 2016/02/01 00:56:04
+Dani: File 20160119_155302.jpg received : 2016/02/01 00:56:27
+Dani: hello : 2016/02/01 11:26:02
+Florin: 111 : 2016/02/01 11:26:09
+Dani: zazaz : 2016/02/01 11:26:17
+Florin: qqq : 2016/02/01 11:26:28
+Dani: qqq : 2016/02/01 11:26:37
+Dani: Receiving file:  DSC03166.JPG : 2016/02/01 11:49:53
+Dani: sal : 2016/02/01 12:02:34
+Dani: Receiving file:  DSC03167.JPG : 2016/02/01 12:02:50
+Dani: 123 : 2016/02/01 12:06:59
+Dani: testare : 2016/02/01 12:15:52
+Florin: primit : 2016/02/01 12:16:03
+Dani: here again : 2016/02/01 12:16:41
+Florin: ok : 2016/02/01 12:16:49
+Florin: exit : 2016/02/01 12:17:01
+Dani: sal : 2016/02/01 16:59:42
+Florin: oki : 2016/02/01 16:59:47
+Dani: 12345 : 2016/02/01 17:07:58
+Dani: Receiving file:  2016-01-12 20-05-28_0002.jpg : 2016/02/01 17:08:22
+Dani: File 2016-01-12 20-05-28_0002.jpg received : 2016/02/01 17:08:25
+Florin: 333 : 2016/02/01 17:08:56
+Dani: 122 : 2016/02/01 17:10:48
+Florin: asasa : 2016/02/01 17:10:54
+Florin: zzzz : 2016/02/01 17:11:00
+Dani: 1234 : 2016/02/01 17:15:26
+Florin: fff : 2016/02/01 17:15:30
+Dani: 1234 : 2016/02/01 17:15:57
+Dani: 9000 : 2016/02/01 17:16:13
+Florin: 23444 : 2016/02/01 17:16:16
+Dani: 9000 : 2016/02/01 17:16:51
+Florin: ok : 2016/02/01 17:16:58
+Florin: test : 2016/02/01 17:17:38
+Dani: test ok : 2016/02/01 17:17:45
+Dani: test : 2016/02/02 14:46:57
+Florin: xcvx : 2016/02/02 14:47:03
+Dani: vvv : 2016/02/02 14:47:06
+Dani: ok : 2016/02/02 14:47:23
+Dani: salut : 2016/02/02 14:55:11
+Dani: salut : 2016/02/02 14:55:26
+Florin: flo : 2016/02/02 14:55:47
+Ionut: io : 2016/02/02 14:55:55
+Dani: 11 : 2016/02/02 14:56:31
+Dani: 900 : 2016/02/02 16:05:37
+Florin: 900 : 2016/02/02 16:05:42
+Florin: 1000 : 2016/02/02 16:11:41
+Dani: roger : 2016/02/02 16:11:48
+Dani: test : 2016/02/02 21:23:00
+Florin: ok : 2016/02/02 21:23:07
+Dani: 1234 : 2016/02/02 21:42:03
+Florin: ok : 2016/02/02 21:42:06
+Florin: test : 2016/02/02 21:44:39
+Dani: Receiving file:  httpd-2.4.18-win32-VC14.zip : 2016/02/02 21:44:54
+Dani: Receiving file:  2_IP.ppt : 2016/02/02 21:47:04
+Dani: File 2_IP.ppt received : 2016/02/02 21:47:22
+Florin: 90 : 2016/02/02 21:47:58
+Dani: 1 : 2016/02/02 21:52:07
+Dani: 12 : 2016/02/02 21:52:49
+Dani: 12 : 2016/02/02 21:54:33
+Dani: Receiving file:  final.docx : 2016/02/02 21:55:20
+Dani: File final.docx received : 2016/02/02 21:55:21
