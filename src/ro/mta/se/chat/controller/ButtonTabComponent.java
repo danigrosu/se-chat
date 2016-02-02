@@ -39,17 +39,18 @@ import java.awt.event.*;
 
 /**
  * Component to be used as tabComponent;
- * Contains a JLabel to show the text and 
- * a JButton to close the tab it belongs to 
- */ 
+ * Contains a JLabel to show the text and
+ * a JButton to close the tab it belongs to
+ */
 public class ButtonTabComponent extends JPanel {
     private final JTabbedPane pane;
     JButton button;
+
     public JButton getButton() {
         return button;
     }
+
     /**
-     *
      * @param pane
      */
     public ButtonTabComponent(final JTabbedPane pane) {
@@ -60,7 +61,7 @@ public class ButtonTabComponent extends JPanel {
         }
         this.pane = pane;
         setOpaque(false);
-        
+
         //make JLabel read titles from JTabbedPane
         JLabel label = new JLabel() {
             public String getText() {
@@ -71,7 +72,7 @@ public class ButtonTabComponent extends JPanel {
                 return null;
             }
         };
-        
+
         add(label);
         //add more space between the label and the button
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
@@ -109,13 +110,11 @@ public class ButtonTabComponent extends JPanel {
         }
 
         /**
-         *
          * @param e the event
          */
         public void actionPerformed(ActionEvent e) {
             int i = pane.indexOfTabComponent(ButtonTabComponent.this);
             if (i != -1) {
-                //pane.remove(i);
                 pane.setVisible(false);
             }
         }

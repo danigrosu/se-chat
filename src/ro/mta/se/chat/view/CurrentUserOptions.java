@@ -15,6 +15,11 @@ import java.awt.event.ActionListener;
  */
 public class CurrentUserOptions extends JPanel {
 
+    private JButton startListening;
+    private JTextField textName;
+    private JTextField textIp;
+    private JTextField textPort;
+
     public CurrentUserOptions() {
         Dimension size = getPreferredSize();
         size.width = 195;
@@ -26,13 +31,13 @@ public class CurrentUserOptions extends JPanel {
         CurrentConfiguration cc = CurrentConfiguration.getTheConfiguration();
 
         JLabel labelName = new JLabel("Name: ");
-        JTextField textName = new JTextField(10);
+        textName = new JTextField(10);
         textName.setText(cc.getUsername());
 
 
         // ip
         JLabel labelIp = new JLabel("Ip: ");
-        JTextField textIp = new JTextField(10);
+        textIp = new JTextField(10);
         textIp.setText(cc.getIp());
 
 
@@ -40,57 +45,10 @@ public class CurrentUserOptions extends JPanel {
 
         // port
         JLabel labelPort = new JLabel("Port: ");
-        JTextField textPort = new JTextField(10);
+        textPort = new JTextField(10);
         textPort.setText(cc.getPort());
 
-        JButton editButton = new JButton("Start chat");
-        editButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String name = textName.getText();
-                String ip = textIp.getText();
-                String port = textPort.getText();
-
-                try {
-
-
-                    CurrentConfiguration.setUsername(name);
-                    CurrentConfiguration.setIp(ip);
-                    CurrentConfiguration.setPort(port);
-
-                    // TODO: Edit user data
-                    DatabaseAdapter.editUser(cc.getUsername(), name, ip, port);
-
-
-                    Thread t = new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                PeerToPeerConnection.acceptConnection(Integer.parseInt(port));
-                            }
-                            catch (Exception e) {
-                                JOptionPane.showMessageDialog(null, "Could not connect on port " + port,
-                                        "Error on connect", JOptionPane.ERROR_MESSAGE);
-                            }
-                        }
-                    });
-                    t.start();
-
-                    JOptionPane.showMessageDialog(null, "Your IP: " + ip + "\nYour port: " + port,
-                            "Chat enabled", JOptionPane.INFORMATION_MESSAGE);
-
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Could not connect on port " + port,
-                            "Error on connect", JOptionPane.ERROR_MESSAGE);
-
-                }
-
-
-            }
-        });
-
-
-        //GridBagConstraints gc = new GridBagConstraints();
+        startListening = new JButton("Start listening");
 
         // first column
         gc.anchor = GridBagConstraints.LAST_LINE_END;
@@ -129,7 +87,27 @@ public class CurrentUserOptions extends JPanel {
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.gridx = 1;
         gc.gridy = 3;
-        add(editButton, gc);
+        add(startListening, gc);
+    }
+
+    public void addListener(ActionListener listener) {
+        this.startListening.addActionListener(listener);
+    }
+
+    public JButton getStartListening() {
+        return this.startListening;
+    }
+
+    public JTextField getTextName() {
+        return this.textName;
+    }
+
+    public JTextField getTextIp() {
+        return this.textIp;
+    }
+
+    public JTextField getTextPort() {
+        return this.textPort;
     }
 
 }

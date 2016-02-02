@@ -1,5 +1,6 @@
 package ro.mta.se.chat.controller.crypto;
 
+import ro.mta.se.chat.utils.Constants;
 import ro.mta.se.chat.utils.Level;
 import ro.mta.se.chat.utils.Logger;
 
@@ -28,16 +29,6 @@ public class RSAKeysManager {
     public static final String ALGORITHM = "RSA";
 
     /**
-     * String to hold the name of the private key file.
-     */
-    public static final String PRIVATE_KEY_FILE = "docs/private";
-
-    /**
-     * String to hold name of the public key file.
-     */
-    public static final String PUBLIC_KEY_FILE = "docs/public";
-
-    /**
      * @param username Username
      * @param password Password
      */
@@ -48,14 +39,14 @@ public class RSAKeysManager {
 
             generateKey(hex, username);
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
         }
     }
 
     /**
-     * @param username
-     * @param password
-     * @return
+     * @param username Username
+     * @param password Password
+     * @return true if login is successful
      */
     public static boolean login(String username, String password) {
         try {
@@ -66,53 +57,21 @@ public class RSAKeysManager {
             if (privateKey != null)
                 return true;
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
 
         }
         return false;
     }
 
-    /**
-     * @param infile
-     * @return
-     */
-    private static byte[] getFileBytes(String infile) {
-        File f = new File(infile);
-        int sizecontent = ((int) f.length());
-        byte[] data = new byte[sizecontent];
-        try {
-            FileInputStream freader = new FileInputStream(f);
-            freader.read(data, 0, sizecontent);
-            freader.close();
-            return data;
-        } catch (IOException ioe) {
-            Logger.log(Level.ERROR, "Exception occurred", ioe);
-            return null;
-        }
-    }
 
     /**
-     * @param data
-     */
-    private static void displayData(byte[] data) {
-        int bytecon = 0;    //to get unsigned byte representation
-        for (int i = 1; i <= data.length; i++) {
-            bytecon = data[i - 1] & 0xFF;   // byte-wise AND converts signed byte to unsigned.
-            if (bytecon < 16)
-                System.out.print("0" + Integer.toHexString(bytecon).toUpperCase() + " ");   // pad on left if single hex digit.
-            else
-                System.out.print(Integer.toHexString(bytecon).toUpperCase() + " ");   // pad on left if single hex digit.
-            if (i % 16 == 0)
-                System.out.println();
-        }
-    }
-
-    /**
-     * @param publicKey
+     * Function that saves the public key to file
+     *
+     * @param publicKey public key
      */
     public static void savePublicKeyToDisk(PublicKey publicKey, String username) {
         try {
-            File publicKeyFile = new File(PUBLIC_KEY_FILE + username + ".bin");
+            File publicKeyFile = new File(Constants.PUBLIC_KEY_FILE + username + ".bin");
 
             if (publicKeyFile.getParentFile() != null) {
                 publicKeyFile.getParentFile().mkdirs();
@@ -126,13 +85,14 @@ public class RSAKeysManager {
             publicKeyOS.close();
 
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
         }
     }
 
     /**
-     * @param privateKey
-     * @param hash
+     * @param privateKey private key
+     * @param hash       hash username + password
+     * @param username   username
      */
     public static void savePrivateKeyToDisk(PrivateKey privateKey, String hash, String username) {
 
@@ -169,12 +129,12 @@ public class RSAKeysManager {
             // and here we have it! a DER encoded PKCS#8 encrypted key!
             byte[] encryptedPkcs8 = encinfo.getEncoded();
 
-            FileOutputStream fos = new FileOutputStream(PRIVATE_KEY_FILE + username + ".bin");
+            FileOutputStream fos = new FileOutputStream(Constants.PRIVATE_KEY_FILE + username + ".bin");
             fos.write(encryptedPkcs8);
             fos.close();
 
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
         }
     }
 
@@ -200,27 +160,28 @@ public class RSAKeysManager {
 
 
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
         }
 
     }
 
     /**
      * Reads the public key from file
-     * @return
+     *
+     * @return public key
      */
     public static PublicKey getPublicKey(String username) {
 
         try {
 
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(PUBLIC_KEY_FILE + username + ".bin"));
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(Constants.PUBLIC_KEY_FILE +
+                    username + ".bin"));
             final PublicKey publicKey = (PublicKey) inputStream.readObject();
             inputStream.close();
 
-            //byte[] bytes = Files.readAllBytes(Paths.get(PRIVATE_KEY_FILE));
             return publicKey;
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
             return null;
         }
 
@@ -228,13 +189,14 @@ public class RSAKeysManager {
 
     /**
      * Reads the private key from file
-     * @param passwd
-     * @return
+     *
+     * @param passwd password
+     * @return private key
      */
     public static PrivateKey getPrivateKey(String passwd, String username) {
         try {
 
-            byte[] theData = Files.readAllBytes(Paths.get(PRIVATE_KEY_FILE + username + ".bin"));
+            byte[] theData = Files.readAllBytes(Paths.get(Constants.PRIVATE_KEY_FILE + username + ".bin"));
 
             EncryptedPrivateKeyInfo encryptPKInfo = new EncryptedPrivateKeyInfo(theData);
 
@@ -248,7 +210,7 @@ public class RSAKeysManager {
             KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
             return kf.generatePrivate(pkcs8KeySpec);
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
             return null;
         }
     }
@@ -260,8 +222,8 @@ public class RSAKeysManager {
      */
     public static boolean areKeysPresent(String username) {
 
-        File privateKey = new File(PRIVATE_KEY_FILE + username + ".bin");
-        File publicKey = new File(PUBLIC_KEY_FILE + username + ".bin");
+        File privateKey = new File(Constants.PRIVATE_KEY_FILE + username + ".bin");
+        File publicKey = new File(Constants.PUBLIC_KEY_FILE + username + ".bin");
 
         if (privateKey.exists() && publicKey.exists()) {
             return true;
@@ -286,7 +248,7 @@ public class RSAKeysManager {
             cipher.init(Cipher.ENCRYPT_MODE, key);
             cipherText = cipher.doFinal(text.getBytes());
         } catch (Exception e) {
-            Logger.log(Level.ERROR, "Exception occurred", e);
+            Logger.log(Level.ERROR, "Exception occurred", e.getMessage());
         }
         return cipherText;
     }
@@ -310,10 +272,15 @@ public class RSAKeysManager {
             dectyptedText = cipher.doFinal(text);
 
         } catch (Exception ex) {
-            Logger.log(Level.ERROR, "Exception occurred", ex);
+            Logger.log(Level.ERROR, "Exception occurred", ex.getMessage());
         }
 
         return new String(dectyptedText);
+    }
+
+    public static String getHash(String username, String password) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        return (new HexBinaryAdapter()).marshal(md.digest((username + password).getBytes()));
     }
 
 }

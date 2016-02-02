@@ -6,6 +6,10 @@ import java.awt.*;
 /**
  * Created by Dani on 11/23/2015.
  */
+
+/**
+ * This view will show the information of a user
+ */
 public class UserEditOptions extends JPanel {
 
 

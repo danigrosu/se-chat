@@ -103,6 +103,13 @@ public class TabComponents extends JFrame {
         return -1;
     }
 
+    /**
+     * Checks if tab is open
+     *
+     * @param ip   Ip
+     * @param port Port
+     * @return int value
+     */
     public int isOpen(String ip, int port) {
         for (int i = 0; i < tabList.size(); i++) {
             ChatRoomPanel chatRoomPanel = tabList.get(i);
@@ -114,10 +121,21 @@ public class TabComponents extends JFrame {
         return 0;
     }
 
+    /**
+     * Retrieves the list of tabs
+     *
+     * @return tab list
+     */
     public LinkedList<ChatRoomPanel> getTabList() {
         return tabComponents.tabList;
     }
 
+    /**
+     * Retrieves the only tab components
+     *
+     * @param title Title of tab components
+     * @return
+     */
     public static TabComponents getTabComponents(String title) {
         if (tabComponents == null) {
             tabComponents = new TabComponents(title);
@@ -132,26 +150,36 @@ public class TabComponents extends JFrame {
         return tabComponents;
     }
 
-
+    /**
+     * Adds a new tab/partner
+     *
+     * @param partner Username
+     * @param ip      Ip
+     * @param port    Port
+     */
     public void addPartner(String partner, String ip, String port) {
         int i = exists(partner);
         if (i != -1) {
             pane.getComponentAt(i).setVisible(true);
             return;
         }
-        ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port);
+        //ChatRoomPanel chatRoomPanel = new ChatRoomPanel(partner, ip, port);
+        ChatRoomController chatRoomController = new ChatRoomController(partner, ip, port);
+        chatRoomController.addListeners();
+        ChatRoomPanel chatRoomPanel = chatRoomController.getChatRoomPanel();
         tabComponents.tabList.add(chatRoomPanel);
         pane.add(partner, chatRoomPanel);
         initTabComponent(pane.getTabCount() - 1);
     }
 
-
+    /**
+     * Sets a new tab at index i
+     *
+     * @param i Index i
+     */
     private void initTabComponent(int i) {
-
         pane.setTabComponentAt(i, new ButtonTabComponent(pane));
     }
-
-    //Setting menu
 
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();

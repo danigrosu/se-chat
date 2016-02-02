@@ -7,7 +7,6 @@ package ro.mta.se.chat.communication;
 import ro.mta.se.chat.controller.crypto.AESManager;
 import ro.mta.se.chat.controller.crypto.DiffieHellmanFactory;
 import ro.mta.se.chat.observers.MessageObserver;
-import ro.mta.se.chat.utils.DataConversion;
 import ro.mta.se.chat.utils.Level;
 import ro.mta.se.chat.utils.Logger;
 
@@ -81,17 +80,15 @@ public class ClientWorkerRunnable implements Runnable {
 
                     PeerToPeerConnection.currentPartners.put(ip + ":" + port, new PeerInfo(peerSocket, aesKey));
 
-                }
-                else if (received.indexOf("#FILE#") == 0) {
+                } else if (received.indexOf("#FILE#") == 0) {
                     filename = received.split(":")[1];
                     fileString = "";
 
                     messageObserver = MessageObserver.getMessageObserver();
                     messageObserver.addListener(username, ip, Integer.toString(port));
-                    messageObserver.notifyView(username, ip, Integer.toString(port),"Receiving file:  " + filename );
+                    messageObserver.notifyView(username, ip, Integer.toString(port), "Receiving file:  " + filename);
 
-                }
-                else if (received.contains("#FILECHUNK#")) {
+                } else if (received.contains("#FILECHUNK#")) {
 
                     fileString += received.replace("#FILECHUNK#", "");
 
@@ -100,40 +97,34 @@ public class ClientWorkerRunnable implements Runnable {
                         fileString = fileString.replace("#FILEEOF#", "");
 
                         try {
-                            FileOutputStream fis = new FileOutputStream(filename);
-                            fis.write(DataConversion.base64ToByteArray(fileString));
-                            fis.close();
+                            ro.mta.se.chat.model.FileWriter.write(filename, fileString);
 
                             messageObserver = MessageObserver.getMessageObserver();
                             messageObserver.addListener(username, ip, Integer.toString(port));
-                            messageObserver.notifyView(username, ip, Integer.toString(port),"File " + filename + " received");
+                            messageObserver.notifyView(username, ip, Integer.toString(port), "File " + filename + " received");
 
                         } catch (Exception e) {
-                            Logger.log(Level.ERROR, "base64ToByteArray error");
+                            Logger.log(Level.ERROR, "Saving file to disk has failed");
                         }
                     }
 
-                }
-                else if (received.contains("#FILEEOF#")) {
+                } else if (received.contains("#FILEEOF#")) {
 
                     fileString = received.replace("#FILEEOF#", "");
 
-                    FileOutputStream fis = new FileOutputStream(filename);
                     try {
-                        fis.write(DataConversion.base64ToByteArray(fileString));
-                        fis.close();
+
+                        ro.mta.se.chat.model.FileWriter.write(filename, fileString);
 
                         messageObserver = MessageObserver.getMessageObserver();
                         messageObserver.addListener(username, ip, Integer.toString(port));
-                        messageObserver.notifyView(username, ip, Integer.toString(port),"File " + filename + " received");
+                        messageObserver.notifyView(username, ip, Integer.toString(port), "File " + filename + " received");
 
-                    }
-                    catch (Exception e) {
-                        Logger.log(Level.ERROR,"base64ToByteArray error");
+                    } catch (Exception e) {
+                        Logger.log(Level.ERROR, "Saving file to disk has failed");
                     }
 
-                }
-                else {
+                } else {
 
                     // TODO: notify view
                     messageObserver = MessageObserver.getMessageObserver();

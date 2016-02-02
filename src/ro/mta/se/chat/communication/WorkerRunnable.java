@@ -117,7 +117,7 @@ public class WorkerRunnable implements Runnable {
                     } else {
 
                         // TODO: notify view
-                        messageObserver.notifyView(ip, Integer.toString(port),
+                        messageObserver.notifyView(username, ip, Integer.toString(port),
                                 AESManager.decrypt(aesKey, "1111111100000000", received));
                     }
                 }

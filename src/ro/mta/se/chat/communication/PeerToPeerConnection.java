@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 /**
- *  Class that keeps information about a peer
+ * Class that keeps information about a peer
  */
 class PeerInfo {
     public PeerInfo(Socket socket, String aesKey) {
@@ -30,6 +30,9 @@ class PeerInfo {
     public String aesKey;
 }
 
+/**
+ * This class manages the connection between peers
+ */
 public class PeerToPeerConnection {
 
 
@@ -37,12 +40,10 @@ public class PeerToPeerConnection {
     protected static ServerSocket socket = null;
     protected static boolean isStopped = false;
 
-
     /**
-     *
-     * @param username
-     * @param ip
-     * @param port
+     * @param username Username
+     * @param ip       Ip
+     * @param port     port
      * @return Socket for p2p communication
      * @throws IOException
      */
@@ -60,7 +61,6 @@ public class PeerToPeerConnection {
             return pi.socket;
         }
 
-
         System.out.println("REACH CONNECT");
         Socket s;
         synchronized (PeerToPeerConnection.class) {
@@ -73,7 +73,6 @@ public class PeerToPeerConnection {
         String a = diffieHellmanFactory.computePublic();
         String g = diffieHellmanFactory.getG();
         String p = diffieHellmanFactory.getP();
-
 
         OutputStream output = s.getOutputStream();
 
@@ -89,10 +88,11 @@ public class PeerToPeerConnection {
     }
 
     /**
+     * Function to send text
      *
-     * @param text
-     * @param ip
-     * @param port
+     * @param text Text
+     * @param ip   Ip
+     * @param port Port
      */
     public static void sendText(String text, String ip, String port, String username) throws Exception {
 
@@ -105,13 +105,19 @@ public class PeerToPeerConnection {
         OutputStream output = peerInfo.socket.getOutputStream();
         output.write(AESManager.encrypt(peerInfo.aesKey, "1111111100000000", text).getBytes());
 
-
         MessageHistory mh = new MessageHistory(username);
         mh.storeNewMessage(text, true);
-
-
     }
 
+    /**
+     * Function to send the beginning of file
+     *
+     * @param filename Filename
+     * @param ip       Ip
+     * @param port     Port
+     * @param username Username
+     * @throws Exception
+     */
     public static void sendFileHead(String filename, String ip, String port, String username) throws Exception {
         PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
 
@@ -123,7 +129,16 @@ public class PeerToPeerConnection {
         output.write(("#FILE#:" + filename).getBytes());
     }
 
-    public static void sendFileTail (String filename, String ip, String port, String username) throws Exception {
+    /**
+     * Function to send the end of file
+     *
+     * @param filename Filename
+     * @param ip       Ip
+     * @param port     Port
+     * @param username Username
+     * @throws Exception
+     */
+    public static void sendFileTail(String filename, String ip, String port, String username) throws Exception {
         PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
 
         if (peerInfo.socket.isClosed()) {
@@ -134,6 +149,15 @@ public class PeerToPeerConnection {
         output.write(("#FILEEOF#").getBytes());
     }
 
+    /**
+     * Function to send a chunk of a file
+     *
+     * @param chunk    Chunk size
+     * @param ip       Ip
+     * @param port     Port
+     * @param username Username
+     * @throws Exception
+     */
     public static void sendFile(String chunk, String ip, String port, String username) throws Exception {
         PeerInfo peerInfo = currentPartners.get(ip + ":" + port);
         if (peerInfo.socket.isClosed()) {
@@ -141,38 +165,36 @@ public class PeerToPeerConnection {
         }
 
         OutputStream output = peerInfo.socket.getOutputStream();
-        //output.write(AESManager.encrypt(peerInfo.aesKey, "1111111100000000", chunk).getBytes());
         chunk = "#FILECHUNK#" + chunk;
         output.write((chunk).getBytes());
 
-
     }
 
     /**
+     * This function accepts new connections
      *
-     * @param myPort
+     * @param myPort My port
      */
-    public static void acceptConnection(int myPort) throws Exception{
-            openServerSocket(myPort);
+    public static void acceptConnection(int myPort) throws Exception {
+        openServerSocket(myPort);
 
-            while (true) {
-                Socket peerSocket = socket.accept();
+        while (true) {
+            Socket peerSocket = socket.accept();
 
-                new Thread(new ServerWorkerRunnable(peerSocket)).start();
+            new Thread(new ServerWorkerRunnable(peerSocket)).start();
 
-            }
+        }
     }
 
     /**
-     *
-     * @return
+     * @return Boolean value of isStopped
      */
     private synchronized boolean isStopped() {
         return isStopped;
     }
 
     /**
-     *
+     * Stop the server
      */
     public static synchronized void stop() {
         isStopped = true;
@@ -184,10 +206,9 @@ public class PeerToPeerConnection {
     }
 
     /**
-     *
      * @param myPort
      */
-    private static void openServerSocket(int myPort) throws Exception{
+    private static void openServerSocket(int myPort) throws Exception {
 
         socket = new ServerSocket(myPort);
         System.out.println("Listening on " + myPort);
@@ -195,7 +216,6 @@ public class PeerToPeerConnection {
     }
 
     /**
-     *
      * @param is
      * @return
      * @throws IOException
@@ -208,15 +228,24 @@ public class PeerToPeerConnection {
         return out;
     }
 
+    /**
+     * Gets String from input stream
+     *
+     * @param is
+     * @param chunkSize
+     * @return
+     * @throws IOException
+     */
     public static String getStringFromInputStream(InputStream is, int chunkSize) throws IOException {
         byte[] in = new byte[2048];
-        int size = is.read(in,0,chunkSize);
+        int size = is.read(in, 0, chunkSize);
         String out = new String(in, 0, size);
         //return out.replace("\n","").replace("\r", "");
         return out;
     }
 
     /**
+     * Gets bytes from input stream
      *
      * @param is
      * @return
@@ -228,6 +257,13 @@ public class PeerToPeerConnection {
         return in;
     }
 
+    /**
+     * Checks if a connection is open
+     *
+     * @param ip
+     * @param port
+     * @return
+     */
     private static PeerInfo checkIfOpen(String ip, String port) {
         PeerInfo pi = currentPartners.get(ip + ":" + port);
         return pi;

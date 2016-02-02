@@ -1,5 +1,6 @@
 package ro.mta.se.chat.observers;
 
+import ro.mta.se.chat.communication.PeerToPeerConnection;
 import ro.mta.se.chat.model.MessageHistory;
 import ro.mta.se.chat.view.ChatRoomPanel;
 import ro.mta.se.chat.view.TabComponents;
@@ -8,7 +9,6 @@ import javax.swing.*;
 import java.util.LinkedList;
 
 /**
- *
  * Created by Dani on 1/25/2016.
  */
 public class MessageObserver {
@@ -16,13 +16,13 @@ public class MessageObserver {
     public LinkedList<ChatRoomPanel> list = null;
     public JTabbedPane pane;
     private static MessageObserver messageObserver = null;
+
     private MessageObserver() {
         this.pane = TabComponents.getTabComponents("Chat room").getPane();
         this.list = TabComponents.getTabComponents("Chat room").getTabList();
     }
 
     /**
-     *
      * @return The only observer for messages that have to exist
      */
     public static MessageObserver getMessageObserver() {
@@ -40,6 +40,7 @@ public class MessageObserver {
 
     /**
      * Adds a new observer for a new chat room
+     *
      * @param username
      * @param ip
      * @param port
@@ -51,6 +52,7 @@ public class MessageObserver {
 
     /**
      * Notifies a specific panel that a new message has arrived
+     *
      * @param ip
      * @param port
      * @param message
@@ -65,21 +67,25 @@ public class MessageObserver {
                 MessageHistory mh = new MessageHistory(username);
                 mh.storeNewMessage(message, false);
 
-                //TabComponents.getTabComponents("Chat room").getPane().setBackgroundAt(i, UIManager.getColor("textForeground"));
 
                 break;
             }
         }
     }
 
+    /**
+     * This function is called when a partner leaves the chat
+     *
+     * @param ip   Ip
+     * @param port Port
+     */
     public void notifyViewOnLeave(String ip, String port) {
         int i = 0;
         for (; i < list.size(); i++) {
             ChatRoomPanel chatRoomPanel = list.get(i);
             if (chatRoomPanel.getPort() == Integer.parseInt(port) && chatRoomPanel.getIp().equals(ip)) {
-                chatRoomPanel.appendTextAreaPrint(chatRoomPanel.getPartner() + " left the chat!");
-
-
+                chatRoomPanel.closeThisRoom();
+                PeerToPeerConnection.currentPartners.remove(ip + ":" + port);
                 break;
             }
         }

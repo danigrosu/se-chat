@@ -1,17 +1,11 @@
 package ro.mta.se.chat.view;
 
-import ro.mta.se.chat.adapters.DatabaseAdapter;
-import ro.mta.se.chat.controller.MainFrame;
-import ro.mta.se.chat.controller.crypto.AESManager;
-import ro.mta.se.chat.controller.crypto.RSAKeysManager;
-import ro.mta.se.chat.model.CurrentConfiguration;
 import ro.mta.se.chat.utils.Level;
 import ro.mta.se.chat.utils.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,8 +16,21 @@ import java.io.File;
  */
 public class Login extends JFrame {
 
+    private JButton loginButton;
+    private JButton signUpButton;
+
+    private JTextField textName;
+    private JPasswordField textPass;
+
+    private JTextField textName2;
+    private JPasswordField textPass2;
+    private JPasswordField textPass3;
+
+
+
     public Login()
     {
+        super("LiveChat login/sign up");
         try {
             setLayout(new BorderLayout());
             setName("Login");
@@ -47,47 +54,14 @@ public class Login extends JFrame {
             JLabel labelName = new JLabel("Name ");
             JLabel labelPass = new JLabel("Password ");
 
-            JTextField textName = new JTextField(10);
-            JPasswordField textPass = new JPasswordField(10);
+            textName = new JTextField(10);
+            textPass = new JPasswordField(10);
 
             textName.setText("Dani");
             textPass.setText("asics");
 
-            JButton loginButton = new JButton("Login");
-            loginButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                try {
-                    if (RSAKeysManager.login(textName.getText(), String.valueOf(textPass.getPassword()))) {
+            loginButton = new JButton("Login");
 
-                        CurrentConfiguration currentConfiguration = CurrentConfiguration.getTheConfiguration();
-                        currentConfiguration.setConnected();
-
-                        CurrentConfiguration.getTheConfiguration(textName.getText(), DatabaseAdapter.getUserIp(
-                                textName.getText()), DatabaseAdapter.getUserPort(textName.getText()));
-
-                        JFrame frame = new MainFrame("LiveChat");
-                        frame.setSize(400, 500);
-                        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        frame.setVisible(true);
-                        frame.setResizable(false);
-                        frame.setLocation(100, 100);
-                        dispose();
-
-
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Authentication failed!");
-                        throw new Exception("Authentication failed!");
-
-                    }
-
-                }
-                catch (Exception ex) {
-                    Logger.log(Level.ERROR,"Exception occurred",ex);
-                }
-
-                }
-            });
             // first column
             gc.anchor = GridBagConstraints.LAST_LINE_END;
             gc.weightx = 0.5;
@@ -131,25 +105,11 @@ public class Login extends JFrame {
             JLabel labelPass2 = new JLabel("Password ");
             JLabel labelPass3 = new JLabel("Password again ");
 
-            JTextField textName2 = new JTextField(10);
-            JPasswordField textPass2 = new JPasswordField(10);
-            JPasswordField textPass3 = new JPasswordField(10);
+            textName2 = new JTextField(10);
+            textPass2 = new JPasswordField(10);
+            textPass3 = new JPasswordField(10);
 
-            JButton signUpButton = new JButton("Sign Up");
-            signUpButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String newUsername = textName2.getText();
-                    String newPassword = String.valueOf(textPass2.getPassword());
-
-                    if(newUsername.contains("-")) {
-                        return;
-                    }
-
-                    RSAKeysManager.createLoginToken(newUsername, newPassword);
-                }
-            });
-
+            signUpButton = new JButton("Sign Up");
 
             // first column
             gc.anchor = GridBagConstraints.LAST_LINE_END;
@@ -200,5 +160,38 @@ public class Login extends JFrame {
             Logger.log(Level.ERROR, "Exception occurred", e);
         }
 
+    }
+
+    public void addActionListener(ActionListener listener) {
+        this.loginButton.addActionListener(listener);
+        this.signUpButton.addActionListener(listener);
+    }
+
+    public JButton getLoginButton() {
+        return this.loginButton;
+    }
+
+    public JButton getSignUpButton() {
+        return this.signUpButton;
+    }
+
+    public JTextField getTextName() {
+        return this.textName;
+    }
+
+    public JTextField getTextName2() {
+        return this.textName2;
+    }
+
+    public JPasswordField getTextPass() {
+        return this.textPass;
+    }
+
+    public JPasswordField getTextPass2() {
+        return this.textPass2;
+    }
+
+    public JPasswordField getTextPass3() {
+        return this.textPass3;
     }
 }

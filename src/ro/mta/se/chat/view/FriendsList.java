@@ -43,10 +43,11 @@ import ro.mta.se.chat.adapters.DatabaseAdapter;
 import ro.mta.se.chat.controller.*;
 import ro.mta.se.chat.model.User;
 import ro.mta.se.chat.model.XmlDbParser;
+import ro.mta.se.chat.utils.Level;
+import ro.mta.se.chat.utils.Logger;
 
 /* view.FriendsList.java requires no other files. */
-public class FriendsList extends JPanel
-        implements ListSelectionListener {
+public class FriendsList extends JPanel implements ListSelectionListener {
     private JList list;
     private DefaultListModel listModel;
 
@@ -83,14 +84,15 @@ public class FriendsList extends JPanel
             JScrollPane listScrollPane = new JScrollPane(list);
 
             JButton addButton = new JButton(addString);
-            AddListener addListener = new AddListener(addButton);
+
+            AddListListener addListener = new AddListListener(addButton, this);
             addButton.setActionCommand(addString);
             addButton.addActionListener(addListener);
             addButton.setEnabled(false);
 
             removeButton = new JButton(removeString);
             removeButton.setActionCommand(removeString);
-            removeButton.addActionListener(new RemoveListener());
+            removeButton.addActionListener(new RemoveListListener(this));
 
             JPanel friendPanel = new JPanel();
             friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.LINE_AXIS));
@@ -144,8 +146,7 @@ public class FriendsList extends JPanel
             add(listScrollPane, BorderLayout.CENTER);
             add(buttonPane, BorderLayout.PAGE_END);
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
 
@@ -165,7 +166,6 @@ public class FriendsList extends JPanel
     }
 
     /**
-     *
      * @param listener
      */
     public void addUserClickedListener(UserClickedListener listener) {
@@ -173,130 +173,10 @@ public class FriendsList extends JPanel
     }
 
     /**
-     *
      * @param listener
      */
     public void removeUserClickedListener(UserClickedListener listener) {
         listenerList.remove(UserClickedListener.class, listener);
-    }
-
-
-    class RemoveListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            //This method can be called only if
-            //there's a valid selection
-            //so go ahead and remove whatever's selected.
-            int index = list.getSelectedIndex();
-            listModel.remove(index);
-
-            int size = listModel.getSize();
-
-            if (size == 0) { //Nobody's left, disable firing.
-                removeButton.setEnabled(false);
-
-            } else { //Select an index.
-                if (index == listModel.getSize()) {
-                    //removed item in last position
-                    index--;
-                }
-
-                list.setSelectedIndex(index);
-                list.ensureIndexIsVisible(index);
-            }
-        }
-    }
-
-    //This listener is shared by the text field and the add button.
-    class AddListener implements ActionListener, DocumentListener {
-        private boolean alreadyEnabled = false;
-        private JButton button;
-
-        public AddListener(JButton button) {
-            this.button = button;
-        }
-
-        //Required by ActionListener.
-        public void actionPerformed(ActionEvent e) {
-            String name = friendName.getText();
-            String ip = ipText.getText();
-            String port = portText.getText();
-
-            try {
-                //model.User didn't type in a unique name...
-                if (name.equals("") || ip.equals("") || port.equals("") || alreadyInList(name)) {
-                    Toolkit.getDefaultToolkit().beep();
-                    friendName.requestFocusInWindow();
-                    friendName.selectAll();
-
-
-                    return;
-                }
-
-                int index = list.getSelectedIndex(); //get selected index
-                if (index == -1) { //no selection, so insert at beginning
-                    index = 0;
-                } else {           //add after the selected item
-                    index++;
-                }
-
-                listModel.insertElementAt(friendName.getText(), index);
-
-                //If we just wanted to add to the end, we'd do this:
-                //listModel.addElement(friendName.getText());
-
-                //Reset the text field.
-                friendName.requestFocusInWindow();
-                friendName.setText("");
-
-                //Select the new item and make it visible.
-                list.setSelectedIndex(index);
-                list.ensureIndexIsVisible(index);
-
-                DatabaseAdapter.addUser(name, ip, port);
-            }
-            catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-
-        //This method tests for string equality. You could certainly
-        //get more sophisticated about the algorithm.  For example,
-        //you might want to ignore white space and capitalization.
-        protected boolean alreadyInList(String name) {
-            return listModel.contains(name);
-        }
-
-        //Required by DocumentListener.
-        public void insertUpdate(DocumentEvent e) {
-            enableButton();
-        }
-
-        //Required by DocumentListener.
-        public void removeUpdate(DocumentEvent e) {
-            handleEmptyTextField(e);
-        }
-
-        //Required by DocumentListener.
-        public void changedUpdate(DocumentEvent e) {
-            if (!handleEmptyTextField(e)) {
-                enableButton();
-            }
-        }
-
-        private void enableButton() {
-            if (!alreadyEnabled) {
-                button.setEnabled(true);
-            }
-        }
-
-        private boolean handleEmptyTextField(DocumentEvent e) {
-            if (e.getDocument().getLength() <= 0) {
-                button.setEnabled(false);
-                alreadyEnabled = false;
-                return true;
-            }
-            return false;
-        }
     }
 
     //This method is required by ListSelectionListener.
@@ -320,6 +200,22 @@ public class FriendsList extends JPanel
 
     public JList getList() {
         return list;
+    }
+
+    public JTextField getFriendName() {
+        return this.friendName;
+    }
+
+    public JTextField getIpText() {
+        return this.ipText;
+    }
+
+    public JTextField getPortText() {
+        return this.portText;
+    }
+
+    public JButton getRemoveButton() {
+        return this.removeButton;
     }
 
 

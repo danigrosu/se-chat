@@ -7,7 +7,6 @@ package ro.mta.se.chat.communication;
 import ro.mta.se.chat.controller.crypto.AESManager;
 import ro.mta.se.chat.controller.crypto.DiffieHellmanFactory;
 import ro.mta.se.chat.observers.MessageObserver;
-import ro.mta.se.chat.utils.DataConversion;
 import ro.mta.se.chat.utils.Level;
 import ro.mta.se.chat.utils.Logger;
 
@@ -21,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 
  */
 public class ServerWorkerRunnable implements Runnable {
+
 
     protected Socket peerSocket = null;
     protected MessageObserver messageObserver = null;
@@ -97,10 +97,9 @@ public class ServerWorkerRunnable implements Runnable {
 
                         messageObserver = MessageObserver.getMessageObserver();
                         messageObserver.addListener(username, ip, Integer.toString(port));
-                        messageObserver.notifyView(username, ip, Integer.toString(port),"Receiving file:  " + filename );
+                        messageObserver.notifyView(username, ip, Integer.toString(port), "Receiving file:  " + filename);
 
-                    }
-                    else if (received.contains("#FILECHUNK#")) {
+                    } else if (received.contains("#FILECHUNK#")) {
 
                         fileString += received.replace("#FILECHUNK#", "");
 
@@ -109,39 +108,33 @@ public class ServerWorkerRunnable implements Runnable {
                             fileString = fileString.replace("#FILEEOF#", "");
 
                             try {
-                                FileOutputStream fis = new FileOutputStream(filename);
-                                fis.write(DataConversion.base64ToByteArray(fileString));
-                                fis.close();
+
+                                ro.mta.se.chat.model.FileWriter.write(filename, fileString);
 
                                 messageObserver = MessageObserver.getMessageObserver();
                                 messageObserver.addListener(username, ip, Integer.toString(port));
-                                messageObserver.notifyView(username, ip, Integer.toString(port),"File " + filename + " received");
+                                messageObserver.notifyView(username, ip, Integer.toString(port), "File " + filename + " received");
 
                             } catch (Exception e) {
-                                Logger.log(Level.ERROR, "base64ToByteArray error");
+                                Logger.log(Level.ERROR, "Saving file to disk has failed");
                             }
                         }
 
-                    }
-                    else if (received.contains("#FILEEOF#")) {
+                    } else if (received.contains("#FILEEOF#")) {
 
                         fileString = received.replace("#FILEEOF#", "");
-
-                        FileOutputStream fis = new FileOutputStream(filename);
                         try {
-                            fis.write(DataConversion.base64ToByteArray(fileString));
-                            fis.close();
+
+                            ro.mta.se.chat.model.FileWriter.write(filename, fileString);
 
                             messageObserver = MessageObserver.getMessageObserver();
                             messageObserver.addListener(username, ip, Integer.toString(port));
-                            messageObserver.notifyView(username, ip, Integer.toString(port),"File " + filename + " received");
-                        }
-                        catch (Exception e) {
-                            Logger.log(Level.ERROR,"base64ToByteArray error", e.getMessage());
+                            messageObserver.notifyView(username, ip, Integer.toString(port), "File " + filename + " received");
+                        } catch (Exception e) {
+                            Logger.log(Level.ERROR, "Saving file to disk has failed", e.getMessage());
                         }
 
-                    }
-                    else {
+                    } else {
 
                         messageObserver = MessageObserver.getMessageObserver();
                         messageObserver.addListener(username, ip, Integer.toString(port));

@@ -1,12 +1,23 @@
 package ro.mta.se.chat.controller.crypto;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import ro.mta.se.chat.adapters.DatabaseAdapter;
+import ro.mta.se.chat.model.CurrentConfiguration;
+import ro.mta.se.chat.proxy.DatabaseProxy;
+import ro.mta.se.chat.utils.DataConversion;
 import ro.mta.se.chat.utils.Level;
 import ro.mta.se.chat.utils.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.security.auth.login.Configuration;
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+import java.io.FileInputStream;
+import java.security.MessageDigest;
+import java.security.PrivateKey;
 
 
 /**
@@ -14,13 +25,12 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AESManager {
 
-
     /**
      * AES encryption
      *
-     * @param key
-     * @param initVector
-     * @param value
+     * @param key AES key
+     * @param initVector Initialization vector
+     * @param value Input text for encrypting
      * @return base64 encrypted text
      */
     public static String encrypt(String key, String initVector, String value) {
@@ -46,9 +56,9 @@ public class AESManager {
     /**
      * AES decryption
      *
-     * @param key
-     * @param initVector
-     * @param encrypted
+     * @param key AES key
+     * @param initVector Initialization vector
+     * @param encrypted Encrypted base64 input
      * @return decrypted text
      */
     public static String decrypt(String key, String initVector, String encrypted) {

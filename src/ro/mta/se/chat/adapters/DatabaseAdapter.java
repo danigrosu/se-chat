@@ -10,7 +10,9 @@ import java.util.ArrayList;
  */
 public class DatabaseAdapter {
 
+
     public static void addUser(String username, String ip, String port) throws Exception {
+
         XmlDbParser xml = new XmlDbParser();
         xml.addUser(new User("0", username, ip, port));
     }
@@ -46,5 +48,10 @@ public class DatabaseAdapter {
     public static ArrayList<User> getAllFriends() throws Exception {
         XmlDbParser xml = new XmlDbParser();
         return xml.getAllFriends();
+    }
+
+    public static void removeUser(String username) throws Exception {
+        XmlDbParser xml = new XmlDbParser();
+        xml.removeUser(username);
     }
 }
