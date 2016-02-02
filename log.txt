@@ -17,4 +17,5 @@ INFO
 Log time: 1447529666313, Message: Message 3
 INFO
 Log time: 1447529666416, Message: Message 4
-INFO
+INFOLog time: 2016/02/03 01:38:55, Message: Saving file to disk has failed
+ERROR

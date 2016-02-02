@@ -2,7 +2,7 @@
 <root count="8">
 
     <friend id="1" ip="127.0.0.1" name="Dani" port="9000"/>
-    <friend id="2" ip="127.0.0.1" name="Florin" port="9001"/>
+    <friend id="2" ip="172.16.10.34" name="Florin" port="9001"/>
     <friend id="3" ip="127.0.0.1" name="Ionut" port="9002"/>
     <friend id="4" ip="127.0.0.1" name="Cezar" port="45000"/>
     <friend id="5" ip="192.168.1.121" name="Viorel" port="45001"/>
