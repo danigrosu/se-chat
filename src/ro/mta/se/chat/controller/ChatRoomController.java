@@ -121,7 +121,7 @@ public class ChatRoomController implements ActionListener {
                                 PeerToPeerConnection.sendFileHead(file.getName(), chatRoomPanel.getIp(),
                                         chatRoomPanel.getPortS(), chatRoomPanel.getPartner());
 
-                                //java.util.Timer timer = new java.util.Timer();
+                                Thread.sleep(1000);
                                 timer.schedule(
                                         new java.util.TimerTask() {
                                             @Override
@@ -156,6 +156,7 @@ public class ChatRoomController implements ActionListener {
                                 PeerToPeerConnection.sendFileTail(file.getName(), chatRoomPanel.getIp(),
                                         chatRoomPanel.getPortS(),
                                         chatRoomPanel.getPartner());
+                                Thread.sleep(1000);
                             } catch (Exception ex) {
                                 timer.cancel();
                                 Logger.log(Level.ERROR, "File sending error", ex.getMessage());
